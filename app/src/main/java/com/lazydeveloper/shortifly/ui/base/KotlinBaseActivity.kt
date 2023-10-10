@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly.base
+package com.lazydeveloper.shortifly.ui.base
 
 import android.app.Dialog
 import android.graphics.Color

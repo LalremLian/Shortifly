@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly
+package com.lazydeveloper.shortifly.ui.home
 
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.lazydeveloper.shortifly.R
+import com.lazydeveloper.shortifly.SearchListViewModel
 import com.lazydeveloper.shortifly.coroutine.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -30,6 +32,7 @@ private val viewModel: SearchListViewModel by viewModels()
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         val navController = findNavController(R.id.nav_host_fragment)
         bottomNavigationView.setupWithNavController(navController)
+
 
         lifecycleScope.launch {
 //            fetchFlowData()

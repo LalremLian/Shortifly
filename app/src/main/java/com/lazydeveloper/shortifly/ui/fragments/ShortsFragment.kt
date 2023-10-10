@@ -1,6 +1,6 @@
-package com.lazydeveloper.shortifly.fragments
+package com.lazydeveloper.shortifly.ui.fragments
 
-import com.lazydeveloper.shortifly.adapter.ShortsAdapter
+import com.lazydeveloper.shortifly.ui.adapters.ShortsAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.lazydeveloper.shortifly.ExoPlayerItem
 import com.lazydeveloper.shortifly.databinding.FragmentShortsBinding
-import com.lazydeveloper.shortifly.model.Video
+import com.lazydeveloper.shortifly.data.models.Video
 import com.lazydeveloper.shortifly.utils.DataSet
 
 class ShortsFragment : Fragment() {

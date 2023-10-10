@@ -6,22 +6,30 @@
     app:startDestination="@id/homeFragment2">
     <fragment
         android:id="@+id/homeFragment2"
-        android:name="com.lazydeveloper.shortifly.fragments.HomeFragment"
+        android:name="com.lazydeveloper.shortifly.ui.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment2_to_playerFragment2"
+            app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/shortsFragment2"
-        android:name="com.lazydeveloper.shortifly.fragments.ShortsFragment"
+        android:name="com.lazydeveloper.shortifly.ui.fragments.ShortsFragment"
         android:label="fragment_shorts"
         tools:layout="@layout/fragment_shorts" />
     <fragment
         android:id="@+id/subscribeFragment2"
-        android:name="com.lazydeveloper.shortifly.fragments.SubscribeFragment"
+        android:name="com.lazydeveloper.shortifly.ui.fragments.SubscribeFragment"
         android:label="fragment_subscribe"
         tools:layout="@layout/fragment_subscribe" />
     <fragment
         android:id="@+id/profileFragment2"
-        android:name="com.lazydeveloper.shortifly.fragments.ProfileFragment"
+        android:name="com.lazydeveloper.shortifly.ui.fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.lazydeveloper.shortifly.ui.fragments.PlayerFragment"
+        android:label="PlayerFragment" />
 </navigation>

@@ -2,7 +2,7 @@ object Versions {
     const val splash = "1.0.1"
     const val coroutines = "1.7.3"
     const val lifecycle_viewmodel = "2.6.2"
-    const val nav_fragment = "2.7.3"
+    const val nav_fragment = "2.7.4"
 
     const val compose = "1.4.3"
     const val composeMaterial3 = "1.1.1"
@@ -18,6 +18,8 @@ object Versions {
 
     //Glide
     const val glide = "4.16.0"
+
+    //
 
 
 }

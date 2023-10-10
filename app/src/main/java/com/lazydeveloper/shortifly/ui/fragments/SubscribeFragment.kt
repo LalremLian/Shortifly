@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly.fragments
+package com.lazydeveloper.shortifly.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

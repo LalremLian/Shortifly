@@ -14,11 +14,10 @@
         android:layout_height="330dp"
         android:background="@color/black">
 
-        <ImageView
+        <com.google.android.exoplayer2.video.VideoDecoderGLSurfaceView
             android:id="@+id/imgThumbnail"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,47 +33,16 @@
 
         <TextView
             android:id="@+id/txtTitle"
-            android:layout_width="300dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:maxLines="2"
-            android:text="@{data.title}"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@+id/imgProfile"
-            app:layout_constraintTop_toBottomOf="@+id/imgThumbnail" />
-
-        <TextView
-            android:id="@+id/txtChannelName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:maxLines="2"
-            android:textSize="14sp"
             android:text="@{data.author}"
-            android:textColor="#79FFFFFF"
-            app:layout_constraintStart_toEndOf="@+id/imgProfile"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
-
-        <TextView
-            android:id="@+id/txtDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textSize="14sp"
-            android:text="@{data.date}"
-            android:textColor="#79FFFFFF"
-            app:layout_constraintStart_toEndOf="@+id/txtChannelName"
-            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
-
-        <TextView
-            android:id="@+id/txtDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@{data.duration}"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/imgThumbnail"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="@+id/imgProfile"
+            app:layout_constraintTop_toTopOf="@+id/imgProfile"
+            app:layout_constraintStart_toEndOf="@+id/imgProfile" />
+
 
         <ImageView
             android:id="@+id/imgMore"

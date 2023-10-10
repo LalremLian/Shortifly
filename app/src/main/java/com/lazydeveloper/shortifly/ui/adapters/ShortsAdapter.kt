@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly.adapter
+package com.lazydeveloper.shortifly.ui.adapters
 
 import android.content.Context
 import android.net.Uri
@@ -16,8 +16,8 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.lazydeveloper.shortifly.ExoPlayerItem
+import com.lazydeveloper.shortifly.data.models.Video
 import com.lazydeveloper.shortifly.databinding.SingleVideoRowBinding
-import com.lazydeveloper.shortifly.model.Video
 
 class ShortsAdapter(
     private val context: Context,

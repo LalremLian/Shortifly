@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly.network
+package com.lazydeveloper.shortifly.utils
 
 const val BASE_URL = "https://api.github.com/"
 const val POST_LIST = "/posts"

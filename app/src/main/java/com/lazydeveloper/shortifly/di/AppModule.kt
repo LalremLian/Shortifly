@@ -3,9 +3,8 @@ package com.lazydeveloper.shortifly.di
 import android.content.Context
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.upstream.DefaultDataSource
-import com.lazydeveloper.shortifly.adapter.ShortsAdapter
 import com.lazydeveloper.shortifly.network.ApiClient
-import com.lazydeveloper.shortifly.network.ApiInterface
+import com.lazydeveloper.shortifly.data.api.ApiInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

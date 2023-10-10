@@ -1,6 +1,6 @@
 package com.lazydeveloper.shortifly.utils
 
-import com.lazydeveloper.shortifly.model.Video
+import com.lazydeveloper.shortifly.data.models.Video
 
 object DataSet {
     val shortsList = arrayListOf(

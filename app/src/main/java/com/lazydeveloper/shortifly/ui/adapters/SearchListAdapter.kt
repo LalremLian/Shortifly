@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly.adapter
+package com.lazydeveloper.shortifly.ui.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
-import com.lazydeveloper.shortifly.fragments.HomeFragment
-import com.lazydeveloper.shortifly.model.VideoResult
+import com.lazydeveloper.shortifly.ui.fragments.HomeFragment
+import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.utils.extensions.onClick
 
 class SearchListAdapter(private val itemClickListener: HomeFragment) :

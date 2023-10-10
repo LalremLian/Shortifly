@@ -1,11 +1,10 @@
 package com.lazydeveloper.shortifly.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.lazydeveloper.shortifly.coroutine.Resource
-import com.lazydeveloper.shortifly.model.SearchResponse
-import com.lazydeveloper.shortifly.repo.AppRepo
+import com.lazydeveloper.shortifly.data.models.SearchResponse
+import com.lazydeveloper.shortifly.data.AppRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

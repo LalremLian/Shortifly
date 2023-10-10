@@ -7,7 +7,7 @@
 
         <variable
             name="data"
-            type="com.lazydeveloper.shortifly.model.Video" />
+            type="com.lazydeveloper.shortifly.data.models.Video" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

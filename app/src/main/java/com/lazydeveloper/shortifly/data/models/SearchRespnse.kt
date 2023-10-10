@@ -1,4 +1,4 @@
-package com.lazydeveloper.shortifly.model
+package com.lazydeveloper.shortifly.data.models
 
 data class SearchResponse(
     val search_metadata: SearchMetadata,

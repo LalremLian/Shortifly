@@ -1,34 +1,36 @@
-package com.lazydeveloper.shortifly.fragments
+package com.lazydeveloper.shortifly.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
-import com.google.gson.Gson
-import com.lazydeveloper.shortifly.adapter.SearchListAdapter
+import com.lazydeveloper.shortifly.R
+import com.lazydeveloper.shortifly.ui.adapters.SearchListAdapter
 import com.lazydeveloper.shortifly.coroutine.Resource
 import com.lazydeveloper.shortifly.databinding.FragmentHomeBinding
-import com.lazydeveloper.shortifly.model.SearchResponse
-import com.lazydeveloper.shortifly.model.VideoResult
-import com.lazydeveloper.shortifly.utils.extensions.openActivity
+import com.lazydeveloper.shortifly.interfaces.OnFragmentInteractionListener
+import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.viewmodels.HomeFragViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
-
     private lateinit var binding: FragmentHomeBinding
-    val viewModel: HomeFragViewModel by viewModels()
+    private val viewModel: HomeFragViewModel by viewModels()
+    private var listener: OnFragmentInteractionListener? = null
     private val postListAdapter: SearchListAdapter by lazy { SearchListAdapter(this) }
 
     private var exoPlayer: ExoPlayer? = null
@@ -45,7 +47,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initViews()
         lifecycleScope.launch {
             fetchFlowData()
@@ -136,9 +137,29 @@ class HomeFragment : Fragment() {
 //            "https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4"
     }
     fun onItemClickListener(item: VideoResult) {
+
+//        val gson = Gson()
+//        val jsonString = gson.toJson(VideoResult)
+        val navController = findNavController()
+        //navigate to another fragment
+
+        navController.navigate(R.id.action_homeFragment2_to_playerFragment2)
+
+
+
+
+        Log.e("TAG2", "onItemClickListener: " )
+
+
+
+
+
+
 //        openActivity<PostDetailsActivity> {
 //            putExtra("data", Gson().toJson(item))
 //        }
+
+
     }
 
 }
