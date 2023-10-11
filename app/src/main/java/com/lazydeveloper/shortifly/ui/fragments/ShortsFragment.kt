@@ -1,6 +1,5 @@
 package com.lazydeveloper.shortifly.ui.fragments
 
-import com.lazydeveloper.shortifly.ui.adapters.ShortsAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,19 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.exoplayer2.ExoPlayer
 import com.lazydeveloper.shortifly.ExoPlayerItem
 import com.lazydeveloper.shortifly.databinding.FragmentShortsBinding
-import com.lazydeveloper.shortifly.data.models.Video
+import com.lazydeveloper.shortifly.ui.adapters.ShortsAdapter
 import com.lazydeveloper.shortifly.utils.DataSet
 
-class ShortsFragment : Fragment() {
-
+class ShortsFragment : Fragment(),ShortsAdapter.OnItemClickListener {
     private lateinit var binding: FragmentShortsBinding
     private lateinit var adapter: ShortsAdapter
-    private val videos = ArrayList<Video>()
     private val exoPlayerItems = ArrayList<ExoPlayerItem>()
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,42 +31,38 @@ class ShortsFragment : Fragment() {
     }
 
     private fun init() {
-
         adapter = ShortsAdapter(requireContext(),
             DataSet.shortsList,
             object : ShortsAdapter.OnVideoPreparedListener {
             override fun onVideoPrepared(exoPlayerItem: ExoPlayerItem) {
                 exoPlayerItems.add(exoPlayerItem)
             }
-        })
+        }, this)
 
         binding.vpager.adapter = adapter
 
         binding.vpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            var lastPlayer: ExoPlayer? = null
+
             override fun onPageSelected(position: Int) {
-                val previousIndex = exoPlayerItems.indexOfFirst { it.exoPlayer.isPlaying }
-                if (previousIndex != -1) {
-                    val player = exoPlayerItems[previousIndex].exoPlayer
-                    player.pause()
-                    player.playWhenReady = false
-                }
-                val newIndex = exoPlayerItems.indexOfFirst { it.position == position }
-                if (newIndex != -1) {
-                    val player = exoPlayerItems[newIndex].exoPlayer
-                    player.playWhenReady = true
-                    player.play()
-                }
+                lastPlayer?.pause()
+                lastPlayer?.playWhenReady = false
+
+                val player = exoPlayerItems.firstOrNull { it.position == position }?.exoPlayer
+                player?.playWhenReady = true
+                player?.play()
+
+                lastPlayer = player
             }
         })
     }
 
     override fun onPause() {
         super.onPause()
-        val index = exoPlayerItems.indexOfFirst { it.position == binding.vpager.currentItem }
-        if (index != -1) {
-            val player = exoPlayerItems[index].exoPlayer
-            player.pause()
-            player.playWhenReady = false
+        val currentItem = binding.vpager.currentItem
+        exoPlayerItems.firstOrNull { it.position == currentItem }?.exoPlayer?.apply {
+            pause()
+            playWhenReady = false
         }
     }
 
@@ -102,6 +94,20 @@ class ShortsFragment : Fragment() {
             val player = item.exoPlayer
             player.stop()
             player.clearMediaItems()
+        }
+    }
+
+    override fun onItemClick(position: Int) {
+        val index = exoPlayerItems.indexOfFirst { it.position == binding.vpager.currentItem }
+        if (index != -1) {
+            val player = exoPlayerItems[index].exoPlayer
+            if (player.isPlaying) {
+                player.pause()
+                player.playWhenReady = false
+            } else {
+                player.playWhenReady = true
+                player.play()
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.lazydeveloper.shortifly.network
 
+import com.lazydeveloper.shortifly.utils.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -10,8 +11,6 @@ import java.util.concurrent.TimeUnit
 class ApiClient {
 
     companion object {
-
-        const val BASE_URL = "https://serpapi.com"
 
         //This is for chucker interceptor
 /*        private fun getChuckerInterceptor(): ChuckerInterceptor {

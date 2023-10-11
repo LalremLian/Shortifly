@@ -3,14 +3,13 @@ package com.lazydeveloper.shortifly.ui.adapters
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
-import com.lazydeveloper.shortifly.ui.fragments.HomeFragment
 import com.lazydeveloper.shortifly.data.models.VideoResult
+import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
 import com.lazydeveloper.shortifly.ui.fragments.PlayerFragment
+import com.lazydeveloper.shortifly.utils.extensions.diffCallback
 import com.lazydeveloper.shortifly.utils.extensions.onClick
 
 class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
@@ -19,26 +18,12 @@ class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
     ) {
 
     companion object {
-
         private val DIFF_CALLBACK =
-            object : DiffUtil.ItemCallback<VideoResult>() {
-                override fun areItemsTheSame(
-                    oldItem: VideoResult,
-                    newItem: VideoResult
-                ): Boolean {
-                    return oldItem == newItem
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: VideoResult,
-                    newItem: VideoResult
-                ): Boolean {
-                    return oldItem == newItem
-                }
-            }
-
+            diffCallback<VideoResult>(
+                areItemsTheSame = {oldItem, newItem -> oldItem == newItem },
+                areContentsTheSame = {oldItem, newItem -> oldItem == newItem }
+            )
     }
-
 
     class PostViewHolder private constructor(
         private val binding: SingleSearchItemBinding,
@@ -50,7 +35,6 @@ class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
             Log.e("TAG", "bind: $item" )
 //                binding.executePendingBindings()
 
-            //implementing glide
             Glide.with(binding.root.context)
                 .load(item.thumbnail)
                 .into(binding.imgThumbnail)

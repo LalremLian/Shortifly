@@ -1,61 +1,46 @@
 package com.lazydeveloper.shortifly.ui.home
 
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.view.WindowManager
-import androidx.activity.viewModels
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.lazydeveloper.shortifly.R
-import com.lazydeveloper.shortifly.SearchListViewModel
-import com.lazydeveloper.shortifly.coroutine.Resource
+import com.lazydeveloper.shortifly.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-private val viewModel: SearchListViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val window = this.window
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val customHeader = binding.customHeader
+
+        val window = window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.statusBarColor = this.resources.getColor(R.color.black)
+        window.statusBarColor = resources.getColor(R.color.black)
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        customHeader.imgSearch.setOnClickListener {
+            Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
+        }
+
+        val bottomNavigationView = binding.bottomNavigationView
         val navController = findNavController(R.id.nav_host_fragment)
         bottomNavigationView.setupWithNavController(navController)
 
-
-        lifecycleScope.launch {
-//            fetchFlowData()
-        }
-    }
-
-    private suspend fun fetchFlowData(){
-        viewModel.getFlowData().collect{ resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    // Handle loading state (e.g., show a progress bar)
-                }
-                is Resource.Success -> {
-                    val data = resource.data
-
-                    Log.e("MainActivity", "fetchFlowData: $data" )
-//                    postListAdapter.submitList(resource.data)
-                }
-                is Resource.Error -> {
-                    // Handle error state (e.g., show an error message)
-//                    val errorMessage = resource.message // Access the error message here
-                    // Display the error message to the user
-                }
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.shortsFragment2) {
+                customHeader.toolbarLayout.visibility = View.GONE
+            } else {
+                customHeader.toolbarLayout.visibility = View.VISIBLE
             }
         }
     }

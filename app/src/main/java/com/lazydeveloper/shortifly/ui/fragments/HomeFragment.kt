@@ -1,7 +1,6 @@
 package com.lazydeveloper.shortifly.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.coroutine.Resource
 import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.FragmentHomeBinding
-import com.lazydeveloper.shortifly.interfaces.OnFragmentInteractionListener
 import com.lazydeveloper.shortifly.ui.adapters.SearchListAdapter
 import com.lazydeveloper.shortifly.viewmodels.HomeFragViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +23,6 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeFragViewModel by viewModels()
-    private var listener: OnFragmentInteractionListener? = null
     private val postListAdapter: SearchListAdapter by lazy { SearchListAdapter(this) }
 
     override fun onCreateView(
@@ -56,22 +53,16 @@ class HomeFragment : Fragment() {
         viewModel.getFlowData().collect { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    // Handle loading state (e.g., show a progress bar)
+                    binding.progressbar.visibility = View.VISIBLE
                 }
 
                 is Resource.Success -> {
-                    val data = resource.data
-
-                    Log.e("MainActivity", "fetchFlowData: $data")
-
-//                    binding.textView.text = data.search_metadata.id.toString()
+                    binding.progressbar.visibility = View.GONE
                     postListAdapter.submitList(resource.data.video_results)
                 }
 
                 is Resource.Error -> {
-                    // Handle error state (e.g., show an error message)
-//                    val errorMessage = resource.message // Access the error message here
-                    // Display the error message to the user
+                    binding.progressbar.visibility = View.GONE
                 }
             }
         }
@@ -85,7 +76,6 @@ class HomeFragment : Fragment() {
         navController.navigate(R.id.action_homeFragment2_to_playerFragment2, Bundle().apply {
             putString("data", jsonString)
         })
-        Log.e("TAG2", "onItemClickListener: ")
     }
 
 }

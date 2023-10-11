@@ -1,15 +1,14 @@
 package com.lazydeveloper.shortifly.ui.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
 import com.lazydeveloper.shortifly.ui.fragments.HomeFragment
-import com.lazydeveloper.shortifly.data.models.VideoResult
+import com.lazydeveloper.shortifly.utils.extensions.diffCallback
 import com.lazydeveloper.shortifly.utils.extensions.onClick
 
 class SearchListAdapter(private val itemClickListener: HomeFragment) :
@@ -18,26 +17,12 @@ class SearchListAdapter(private val itemClickListener: HomeFragment) :
     ) {
 
     companion object {
-
         private val DIFF_CALLBACK =
-            object : DiffUtil.ItemCallback<VideoResult>() {
-                override fun areItemsTheSame(
-                    oldItem: VideoResult,
-                    newItem: VideoResult
-                ): Boolean {
-                    return oldItem == newItem
-                }
-
-                override fun areContentsTheSame(
-                    oldItem: VideoResult,
-                    newItem: VideoResult
-                ): Boolean {
-                    return oldItem == newItem
-                }
-            }
-
+            diffCallback<VideoResult>(
+                areItemsTheSame = {oldItem, newItem -> oldItem == newItem },
+                areContentsTheSame = {oldItem, newItem -> oldItem == newItem }
+            )
     }
-
 
     class PostViewHolder private constructor(
         private val binding: SingleSearchItemBinding,
@@ -45,11 +30,6 @@ class SearchListAdapter(private val itemClickListener: HomeFragment) :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: VideoResult) {
             binding.data = item
-
-            Log.e("TAG", "bind: $item" )
-//                binding.executePendingBindings()
-
-            //implementing glide
             Glide.with(binding.root.context)
                 .load(item.thumbnail)
                 .into(binding.imgThumbnail)

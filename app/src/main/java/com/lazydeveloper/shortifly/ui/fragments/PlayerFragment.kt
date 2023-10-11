@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -17,7 +16,6 @@ import com.lazydeveloper.shortifly.databinding.FragmentPlayerBinding
 import com.lazydeveloper.shortifly.ui.adapters.PlayerItemListAdapter
 import com.lazydeveloper.shortifly.utils.DataSet
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PlayerFragment : Fragment() {
@@ -50,9 +48,6 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        lifecycleScope.launch {
-//            fetchFlowData()
-        }
         preparePlayer()
     }
     private fun initViews() {

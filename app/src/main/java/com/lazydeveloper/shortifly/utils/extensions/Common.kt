@@ -29,6 +29,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import com.lazydeveloper.shortifly.R
 import java.util.*
 
@@ -265,5 +266,17 @@ fun View.getMarginLayoutParams(): ViewGroup.MarginLayoutParams? {
 infix fun View.onClick(function: (View) -> Unit) {
     setOnClickListener {
         function.invoke(it)
+    }
+}
+
+inline fun <T : Any> diffCallback(crossinline areItemsTheSame: (oldItem: T, newItem: T) -> Boolean, crossinline areContentsTheSame: (oldItem: T, newItem: T) -> Boolean): DiffUtil.ItemCallback<T> {
+    return object : DiffUtil.ItemCallback<T>() {
+        override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {
+            return areItemsTheSame(oldItem, newItem)
+        }
+
+        override fun areContentsTheSame(oldItem: T, newItem: T): Boolean {
+            return areContentsTheSame(oldItem, newItem)
+        }
     }
 }

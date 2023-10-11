@@ -22,8 +22,9 @@ import com.lazydeveloper.shortifly.databinding.SingleVideoRowBinding
 class ShortsAdapter(
     private val context: Context,
     private val videos: ArrayList<Video>,
-    private val videoPreparedListener: OnVideoPreparedListener
-) : RecyclerView.Adapter<ShortsAdapter.VideoViewHolder>() {
+    private val videoPreparedListener: OnVideoPreparedListener,
+    private val itemClickListener: OnItemClickListener? = null
+) : RecyclerView.Adapter<ShortsAdapter.VideoViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         VideoViewHolder(
@@ -40,9 +41,12 @@ class ShortsAdapter(
     interface OnVideoPreparedListener {
         fun onVideoPrepared(exoPlayerItem: ExoPlayerItem)
     }
+    interface OnItemClickListener {
+        fun onItemClick(position: Int)
+    }
 
     inner class VideoViewHolder(private val binding: SingleVideoRowBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root){
 
         private val exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
         private val dataSourceFactory = DefaultDataSource.Factory(context)
@@ -63,6 +67,9 @@ class ShortsAdapter(
                     binding.pbLoading.visibility = if (playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
                 }
             })
+            binding.root.setOnClickListener {
+                itemClickListener?.onItemClick(adapterPosition)
+            }
         }
 
         fun bind(videoModel: Video) {
