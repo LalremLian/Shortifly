@@ -1,5 +1,6 @@
 package com.lazydeveloper.shortifly.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -9,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.databinding.ActivityMainBinding
+import com.lazydeveloper.shortifly.ui.fragments.BottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,9 +19,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initial()
+    }
+
+    private fun initial() {
+        binding.floatingButton.drawable?.setTint(Color.WHITE)
 
         val customHeader = binding.customHeader
 
@@ -43,5 +49,11 @@ class MainActivity : AppCompatActivity() {
                 customHeader.toolbarLayout.visibility = View.VISIBLE
             }
         }
+
+        binding.floatingButton.setOnClickListener {
+            val bottomSheetFragment = BottomSheetFragment()
+            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+        }
     }
+
 }

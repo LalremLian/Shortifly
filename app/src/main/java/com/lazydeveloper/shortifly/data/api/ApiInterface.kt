@@ -6,18 +6,11 @@ import com.lazydeveloper.shortifly.utils.DEVICE
 import com.lazydeveloper.shortifly.utils.ENGINE
 import com.lazydeveloper.shortifly.utils.GL
 import com.lazydeveloper.shortifly.utils.HL
-import com.lazydeveloper.shortifly.utils.POST_LIST
 import com.lazydeveloper.shortifly.utils.SEARCH
 import retrofit2.http.*
 
 
 interface ApiInterface {
-
-//    @GET(POST_LIST)
-//    suspend fun getPostList(
-//        @HeaderMap headers: Map<String, String> = emptyMap()
-//    ): PostListResponse
-
     @GET(SEARCH)
     suspend fun getSearchDataList(
 //        @HeaderMap headers: Map<String, String> = emptyMap(),

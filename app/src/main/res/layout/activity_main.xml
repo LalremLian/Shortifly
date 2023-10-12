@@ -16,7 +16,7 @@
     <fragment
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
@@ -25,13 +25,13 @@
         app:layout_constraintTop_toBottomOf="@+id/custom_header"
         app:navGraph="@navigation/bottom_nav_graph" />
 
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"
         android:layout_height="70dp"
         android:background="@drawable/custom_bottom_nav"
         app:itemActiveIndicatorStyle="@color/black"
-        app:menu="@menu/bottom_menu"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
         app:elevation="10dp"
@@ -42,6 +42,18 @@
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_menu">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:backgroundTint="#00000000"
+            android:src="@drawable/ic_add"
+            android:layout_marginBottom="13dp"
+            app:maxImageSize="45dp"/>
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

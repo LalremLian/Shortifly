@@ -11,17 +11,6 @@ import java.util.concurrent.TimeUnit
 class ApiClient {
 
     companion object {
-
-        //This is for chucker interceptor
-/*        private fun getChuckerInterceptor(): ChuckerInterceptor {
-            return ChuckerInterceptor.Builder(App.staticContext)
-                .collector(ChuckerCollector(App.staticContext))
-                .maxContentLength(250000L)
-                .redactHeaders(emptySet())
-                .alwaysReadResponseBody(false)
-                .build()
-        }*/
-
         private fun getClient(): OkHttpClient.Builder {
             return OkHttpClient().newBuilder()
                 .callTimeout(3, TimeUnit.MINUTES)
@@ -46,7 +35,6 @@ class ApiClient {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
             .client(getClient().build())
             .build()
-
     }
 
 }

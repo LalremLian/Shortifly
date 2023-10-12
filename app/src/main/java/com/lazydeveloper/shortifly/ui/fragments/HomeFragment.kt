@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.coroutine.Resource
@@ -20,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeFragViewModel by viewModels()
     private val postListAdapter: SearchListAdapter by lazy { SearchListAdapter(this) }
