@@ -40,7 +40,7 @@ class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
                 .into(binding.imgThumbnail)
 
             binding.root onClick {
-                itemClickListener?.onItemClickListener(item)
+                itemClickListener.onItemClickListener(item)
             }
         }
 

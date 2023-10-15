@@ -1,6 +1,15 @@
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
 object Dependencies {
+    const val core = "androidx.core:core-ktx:${Versions.kotlin}"
+    const val appcompat = "androidx.appcompat:appcompat:${Versions.appcompat}"
+    const val material = "com.google.android.material:material:${Versions.material}"
+    const val constraintslayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintslayout}"
+    const val junit = "junit:junit:${Versions.junit}"
+    const val test_junit = "androidx.test.ext:junit:${Versions.test_junit}"
+    const val expresso = "androidx.test.espresso:espresso-core:${Versions.expresso}"
+    const val recyclerview = "androidx.recyclerview:recyclerview:${Versions.recyclerview}"
+
     const val composeMaterial = "androidx.compose.material3:material3:${Versions.composeMaterial3}"
     const val composeUi = "androidx.compose.ui:ui:${Versions.compose}"
     const val composeUiGraphics = "androidx.compose.ui:ui-graphics:${Versions.compose}"
@@ -45,6 +54,38 @@ object Dependencies {
     const val circlularImage = "de.hdodenhof:circleimageview:${Versions.circularImage}"
 
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
+}
+
+fun DependencyHandler.core() {
+    implementation(Dependencies.core)
+}
+
+fun DependencyHandler.appcompat() {
+    implementation(Dependencies.appcompat)
+}
+
+fun DependencyHandler.material() {
+    implementation(Dependencies.material)
+}
+
+fun DependencyHandler.constraintslayout() {
+    implementation(Dependencies.constraintslayout)
+}
+
+fun DependencyHandler.junit() {
+    testImplementation(Dependencies.junit)
+}
+
+fun DependencyHandler.test_junit() {
+    androidTestImplementation(Dependencies.test_junit)
+}
+
+fun DependencyHandler.expresso() {
+    androidTestImplementation(Dependencies.expresso)
+}
+
+fun DependencyHandler.recyclerview() {
+    implementation(Dependencies.recyclerview)
 }
 
 fun DependencyHandler.splash() {
