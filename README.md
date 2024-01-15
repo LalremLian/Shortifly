@@ -27,3 +27,4 @@ Users can follow their favorite creators, and the app may prioritize content fro
 ### UI Designs
 - UI/UX designed made in Figma app and Canva!
 
+![ShortiFly Banner](https://github.com/LalremLian/Shortifly/assets/68969199/8559d71f-2fc3-4a82-84b2-e6484133f476)
