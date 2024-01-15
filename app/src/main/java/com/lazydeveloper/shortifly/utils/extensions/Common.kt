@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import com.lazydeveloper.shortifly.R
+import com.lazydeveloper.shortifly.ui.home.MainActivity
 import java.util.*
 
 fun View.backPress() {
@@ -268,7 +269,6 @@ infix fun View.onClick(function: (View) -> Unit) {
         function.invoke(it)
     }
 }
-
 inline fun <T : Any> diffCallback(crossinline areItemsTheSame: (oldItem: T, newItem: T) -> Boolean, crossinline areContentsTheSame: (oldItem: T, newItem: T) -> Boolean): DiffUtil.ItemCallback<T> {
     return object : DiffUtil.ItemCallback<T>() {
         override fun areItemsTheSame(oldItem: T, newItem: T): Boolean {

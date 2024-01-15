@@ -1,5 +1,6 @@
 package com.lazydeveloper.shortifly.utils
 
+import com.lazydeveloper.shortifly.data.models.Channel
 import com.lazydeveloper.shortifly.data.models.Video
 import com.lazydeveloper.shortifly.data.models.VideoResult
 
@@ -34,7 +35,7 @@ object DataSet {
         ),
     )
 
-    val shortList = arrayListOf(
+    val shortListForPlayerPage = arrayListOf(
         VideoResult(
             1,
             "Big Bunny's Tender",
@@ -84,6 +85,49 @@ object DataSet {
             "46",
             "25",
             "2:30"
+        ),
+    )
+
+    val channelList = arrayListOf(
+        Channel(
+            1,
+            "Bunny's Tender",
+            "https://serpapi.com/searches/6524f72c0574f5576c140df1/images/d51a43776fc0f3fde522a7f42294dde37c23614794605aedbce5b35aaefba8c8.jpeg",
+        ),
+        Channel(
+            2,
+            "Big Tender",
+            "https://wallpapers.com/images/featured/cool-profile-picture-87h46gcobjl5e4xu.webp",
+        ),
+        Channel(
+            3,
+            "Big Bunny",
+            "https://wallpapers.com/images/high/cool-profile-picture-1ecoo30f26bkr14o.webp",
+        ),
+        Channel(
+            4,
+            "Tender Carlson",
+            "https://wallpapers.com/images/high/cool-profile-picture-awled9dwo4qq2yv2.webp",
+        ),
+        Channel(
+            5,
+            "Pure Cake",
+            "https://wallpapers.com/images/high/cool-profile-picture-ug9oc08q7nn527wu.webp",
+        ),
+        Channel(
+            6,
+            "Chookies",
+            "https://wallpapers.com/images/high/cool-profile-picture-n4gqyfx775vg4lxx.webp",
+        ),
+        Channel(
+            5,
+            "Top Hunter",
+            "https://www.finetoshine.com/wp-content/uploads/Image-for-Cute-Girl-Hidden-Face-Profile-Picture-Download-for-Fb-2.jpg",
+        ),
+        Channel(
+            6,
+            "Gang Bang",
+            "https://wallpapers.com/images/high/cool-profile-picture-q9i2gvcrskxefbe9.webp",
         ),
     )
 }

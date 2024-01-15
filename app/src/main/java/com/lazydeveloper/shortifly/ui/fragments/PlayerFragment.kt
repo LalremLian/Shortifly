@@ -56,7 +56,7 @@ class PlayerFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = postListAdapter
         }
-        postListAdapter.submitList(DataSet.shortList)
+        postListAdapter.submitList(DataSet.shortListForPlayerPage)
     }
 
     fun onItemClickListener(item: VideoResult) {}

@@ -11,9 +11,111 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/txtShorts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shorts"
+        android:visibility="gone"
+        android:layout_marginStart="15dp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgSearch" />
+
+    <ImageView
+        android:id="@+id/imgSubscriptions"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginVertical="30dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_subscribe"
+        app:layout_constraintEnd_toEndOf="@+id/txtShorts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtShorts" />
+
+    <TextView
+        android:id="@+id/txtSubs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subscriptions"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgSubscriptions"
+        app:layout_constraintStart_toEndOf="@+id/imgSubscriptions"
+        app:layout_constraintTop_toTopOf="@+id/imgSubscriptions" />
+
+    <ImageView
+        android:id="@+id/imgLive"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginVertical="70dp"
+        android:layout_marginHorizontal="20dp"
+        android:src="@drawable/ic_like"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/txtSubs"
+        app:layout_constraintTop_toTopOf="@+id/vpager" />
+
+    <TextView
+        android:id="@+id/txtLive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Live"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgLive"
+        app:layout_constraintStart_toEndOf="@+id/imgLive"
+        app:layout_constraintTop_toTopOf="@+id/imgLive" />
+
+    <ImageView
+        android:id="@+id/imgPlay"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_pause"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgSearch"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_search"
+        app:layout_constraintBottom_toBottomOf="@+id/imgCamera"
+        app:layout_constraintEnd_toStartOf="@+id/imgCamera"
+        app:layout_constraintTop_toTopOf="@+id/imgCamera" />
+
+    <ImageView
+        android:id="@+id/imgCamera"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_camera"
+        app:layout_constraintBottom_toBottomOf="@+id/imgMore"
+        app:layout_constraintEnd_toStartOf="@+id/imgMore"
+        app:layout_constraintTop_toTopOf="@+id/imgMore" />
+
+    <ImageView
+        android:id="@+id/imgMore"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_more"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -54,6 +54,10 @@ class MainActivity : AppCompatActivity() {
             val bottomSheetFragment = BottomSheetFragment()
             bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
+
+        binding.customHeader.circleImageProfile.setOnClickListener {
+            navController.navigate(R.id.profileFragment2)
+        }
     }
 
 }

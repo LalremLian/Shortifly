@@ -1,26 +1,35 @@
 package com.lazydeveloper.shortifly.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.exoplayer2.ExoPlayer
 import com.lazydeveloper.shortifly.ExoPlayerItem
+import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.databinding.FragmentShortsBinding
 import com.lazydeveloper.shortifly.ui.adapters.ShortsAdapter
 import com.lazydeveloper.shortifly.utils.DataSet
+import kotlinx.coroutines.delay
+import java.util.Timer
+import kotlin.concurrent.schedule
 
-class ShortsFragment : Fragment(),ShortsAdapter.OnItemClickListener {
+class ShortsFragment : Fragment(), ShortsAdapter.OnItemClickListener {
     private lateinit var binding: FragmentShortsBinding
     private lateinit var adapter: ShortsAdapter
     private val exoPlayerItems = ArrayList<ExoPlayerItem>()
+
+    private lateinit var seekBarHandler: Handler
+    private lateinit var seekBarRunnable: Runnable
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentShortsBinding.inflate(inflater)
         return binding.root
     }
@@ -51,14 +60,25 @@ class ShortsFragment : Fragment(),ShortsAdapter.OnItemClickListener {
                 val player = exoPlayerItems.firstOrNull { it.position == position }?.exoPlayer
                 player?.playWhenReady = true
                 player?.play()
+                binding.imgPlay.visibility = View.GONE
 
                 lastPlayer = player
             }
         })
+        binding.imgSearch.setOnClickListener {
+            Toast.makeText(requireContext(), "Search", Toast.LENGTH_SHORT).show()
+        }
+        binding.imgCamera.setOnClickListener {
+            Toast.makeText(requireContext(), "Camera", Toast.LENGTH_SHORT).show()
+        }
+        binding.imgMore.setOnClickListener {
+            Toast.makeText(requireContext(), "More", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onPause() {
         super.onPause()
+        Log.e("ShortsFragment","onPause")
         val currentItem = binding.vpager.currentItem
         exoPlayerItems.firstOrNull { it.position == currentItem }?.exoPlayer?.apply {
             pause()
@@ -73,6 +93,11 @@ class ShortsFragment : Fragment(),ShortsAdapter.OnItemClickListener {
             val player = exoPlayerItems[index].exoPlayer
             player.playWhenReady = true
             player.play()
+            binding.imgPlay.visibility = View.GONE
+            binding.txtShorts.visibility = View.GONE
+            binding.imgSubscriptions.visibility = View.GONE
+            binding.txtLive.visibility = View.GONE
+            binding.imgLive.visibility = View.GONE
         }
     }
 
@@ -103,12 +128,40 @@ class ShortsFragment : Fragment(),ShortsAdapter.OnItemClickListener {
             val player = exoPlayerItems[index].exoPlayer
             if (player.isPlaying) {
                 player.pause()
+                binding.imgPlay.visibility = View.VISIBLE
+                binding.txtShorts.visibility = View.VISIBLE
+                binding.imgSubscriptions.visibility = View.VISIBLE
+                binding.txtLive.visibility = View.VISIBLE
+                binding.imgLive.visibility = View.VISIBLE
                 player.playWhenReady = false
             } else {
                 player.playWhenReady = true
                 player.play()
+                binding.imgPlay.setImageResource(R.drawable.ic_pause)
+                binding.imgPlay.visibility = View.GONE
+                binding.txtShorts.visibility = View.GONE
+                binding.imgSubscriptions.visibility = View.GONE
+                binding.txtLive.visibility = View.GONE
+                binding.imgLive.visibility = View.GONE
             }
         }
     }
 
+    override fun onPlayerStateChange(position: Int) {
+//        val index = exoPlayerItems.indexOfFirst { it.position == binding.vpager.currentItem }
+//        if (index != -1) {
+//            val player = exoPlayerItems[index].exoPlayer
+//            if (player.isPlaying) {
+//                player.pause()
+////                binding.imgPlay.visibility = View.VISIBLE
+//                player.playWhenReady = false
+//            } else {
+//                player.playWhenReady = true
+//                player.play()
+////                binding.imgPlay.setImageResource(R.drawable.ic_pause)
+////                binding.imgPlay.visibility = View.GONE
+//            }
+//        }
+//    }
+    }
 }
