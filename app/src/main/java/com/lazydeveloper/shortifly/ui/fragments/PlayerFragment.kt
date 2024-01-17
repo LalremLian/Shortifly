@@ -1,10 +1,13 @@
 package com.lazydeveloper.shortifly.ui.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -13,9 +16,11 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.gson.Gson
 import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.FragmentPlayerBinding
+import com.lazydeveloper.shortifly.player.PlayerViewModel
 import com.lazydeveloper.shortifly.ui.adapters.PlayerItemListAdapter
 import com.lazydeveloper.shortifly.utils.DataSet
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PlayerFragment : Fragment() {
@@ -24,6 +29,10 @@ class PlayerFragment : Fragment() {
     private var exoPlayer: ExoPlayer? = null
     private var playbackPosition = 0L
     private var playWhenReady = true
+
+    private val playerViewModel by viewModels<PlayerViewModel>()
+    private val viewModel: PlayerViewModel by viewModels()
+
 
     private lateinit var binding: FragmentPlayerBinding
 
@@ -48,7 +57,9 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        preparePlayer()
+        lifecycleScope.launch {
+            preparePlayer()
+        }
     }
     private fun initViews() {
         binding.recyclerView.apply {
@@ -60,20 +71,38 @@ class PlayerFragment : Fragment() {
     }
 
     fun onItemClickListener(item: VideoResult) {}
-    private fun preparePlayer() {
-        exoPlayer = ExoPlayer.Builder(
-            requireContext(),
-        ).build()
+    private suspend fun preparePlayer() {
+        //convert string to uri
+
+
+
+
+        viewModel.setMediaItem(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+//        exoPlayer = ExoPlayer.Builder(
+//            requireContext(),
+//        ).build()
+//        val exo = playerViewModel
+
         exoPlayer?.playWhenReady = true
-        binding.videoPlayer.player = exoPlayer
-        val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
-        val mediaItem = MediaItem.fromUri(URL)
-        val mediaSource =
-            DashMediaSource.Factory(defaultHttpDataSourceFactory).createMediaSource(mediaItem)
-        exoPlayer?.setMediaSource(mediaSource)
-        exoPlayer?.seekTo(playbackPosition)
-        exoPlayer?.playWhenReady = playWhenReady
-        exoPlayer?.prepare()
+        binding.videoPlayer.player = viewModel.player
+//        val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
+//        val mediaItem = MediaItem.fromUri(URL)
+//        val mediaSource =
+//            DashMediaSource.Factory(defaultHttpDataSourceFactory).createMediaSource(mediaItem)
+//        exoPlayer?.setMediaSource(mediaSource)
+//        exoPlayer?.seekTo(playbackPosition)
+//        exoPlayer?.playWhenReady = playWhenReady
+//        exoPlayer?.prepare()
+
+//        viewModel.isPlayingStateFlow.collect { isPlaying ->
+//            if (isPlaying) {
+//                viewModel.player.play()
+//            } else {
+//                viewModel.player.pause()
+//            }
+//        }
+
+
     }
 
     private fun  relasePlayer(){
