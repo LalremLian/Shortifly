@@ -1,9 +1,11 @@
 package com.lazydeveloper.shortifly.di
 
 import android.app.Application
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import androidx.annotation.OptIn
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.google.android.gms.cast.framework.CastContext
 import dagger.Module
 import dagger.Provides
@@ -15,7 +17,7 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @InstallIn(ViewModelComponent::class)
 object PlayerModule {
 
-    @Provides
+    @OptIn(UnstableApi::class) @Provides
     @ViewModelScoped
     fun provideVideoPlayer(app: Application): Player {
         val trackSelector = DefaultTrackSelector(app)

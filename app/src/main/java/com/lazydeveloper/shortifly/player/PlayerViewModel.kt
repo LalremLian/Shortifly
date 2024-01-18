@@ -3,12 +3,14 @@ package com.lazydeveloper.shortifly.player
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.util.MimeTypes
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.ui.AspectRatioFrameLayout
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
@@ -38,6 +40,15 @@ class PlayerViewModel @Inject constructor(
 //    init {
 //        player.apply { prepare() }
 //    }
+
+//    private val _playbackState = MutableStateFlow<Player.State>(Player.STATE_IDLE)
+//    val playbackState: StateFlow<Player.State> = _playbackState
+
+    private val _duration = MutableStateFlow<Long>(0)
+    val duration: StateFlow<Long> = _duration
+
+    private val _currentPosition = MutableStateFlow<Long>(0)
+    val currentPosition: StateFlow<Long> = _currentPosition
     
     override fun onCleared() {
         super.onCleared()
@@ -134,7 +145,7 @@ class PlayerViewModel @Inject constructor(
     }
 }
 
-data class PlayerState(
+@UnstableApi data class PlayerState(
     val isPlaying: Boolean = true,
     val isPlaybackStarted: Boolean = false,
     val isPlayerLoading: Boolean = true,

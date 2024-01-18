@@ -25,6 +25,9 @@ object Versions {
     const val exoPlayer = "2.17.1"
     const val circularImage = "3.1.0"
 
+    //media3
+    const val media3ExoPlayer = "1.2.1"
+
     //Glide
     const val glide = "4.16.0"
 

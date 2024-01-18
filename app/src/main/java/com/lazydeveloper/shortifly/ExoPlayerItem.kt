@@ -1,6 +1,6 @@
 package com.lazydeveloper.shortifly
 
-import com.google.android.exoplayer2.ExoPlayer
+import androidx.media3.exoplayer.ExoPlayer
 
 class ExoPlayerItem (
     var exoPlayer: ExoPlayer,

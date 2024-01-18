@@ -1,31 +1,25 @@
 package com.lazydeveloper.shortifly.ui.fragments
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.exoplayer2.ExoPlayer
 import com.lazydeveloper.shortifly.ExoPlayerItem
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.databinding.FragmentShortsBinding
 import com.lazydeveloper.shortifly.ui.adapters.ShortsAdapter
 import com.lazydeveloper.shortifly.utils.DataSet
-import kotlinx.coroutines.delay
-import java.util.Timer
-import kotlin.concurrent.schedule
 
 class ShortsFragment : Fragment(), ShortsAdapter.OnItemClickListener {
     private lateinit var binding: FragmentShortsBinding
     private lateinit var adapter: ShortsAdapter
     private val exoPlayerItems = ArrayList<ExoPlayerItem>()
 
-    private lateinit var seekBarHandler: Handler
-    private lateinit var seekBarRunnable: Runnable
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -148,20 +142,20 @@ class ShortsFragment : Fragment(), ShortsAdapter.OnItemClickListener {
     }
 
     override fun onPlayerStateChange(position: Int) {
-//        val index = exoPlayerItems.indexOfFirst { it.position == binding.vpager.currentItem }
-//        if (index != -1) {
-//            val player = exoPlayerItems[index].exoPlayer
-//            if (player.isPlaying) {
-//                player.pause()
-////                binding.imgPlay.visibility = View.VISIBLE
-//                player.playWhenReady = false
-//            } else {
-//                player.playWhenReady = true
-//                player.play()
-////                binding.imgPlay.setImageResource(R.drawable.ic_pause)
-////                binding.imgPlay.visibility = View.GONE
-//            }
-//        }
-//    }
+        val index = exoPlayerItems.indexOfFirst { it.position == binding.vpager.currentItem }
+        if (index != -1) {
+            val player = exoPlayerItems[index].exoPlayer
+            if (player.isPlaying) {
+                player.pause()
+//                binding.imgPlay.visibility = View.VISIBLE
+                player.playWhenReady = false
+            } else {
+                player.playWhenReady = true
+                player.play()
+//                binding.imgPlay.setImageResource(R.drawable.ic_pause)
+//                binding.imgPlay.visibility = View.GONE
+            }
+        }
+
     }
 }

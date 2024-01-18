@@ -63,7 +63,9 @@ dependencies {
     retrofit()
     hilt()
     coroutines()
-    exoplayer()
+//    exoplayer()
     circularImage()
     glide()
+
+    media3()
 }

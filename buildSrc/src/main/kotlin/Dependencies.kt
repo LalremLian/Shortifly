@@ -54,6 +54,11 @@ object Dependencies {
     const val circlularImage = "de.hdodenhof:circleimageview:${Versions.circularImage}"
 
     const val glide = "com.github.bumptech.glide:glide:${Versions.glide}"
+
+    const val media3ExoPlayer = "androidx.media3:media3-exoplayer:${Versions.media3ExoPlayer}"
+    const val media3ExoPlayerDash = "androidx.media3:media3-exoplayer-dash:${Versions.media3ExoPlayer}"
+    const val media3Ui = "androidx.media3:media3-ui:${Versions.media3ExoPlayer}"
+
 }
 
 fun DependencyHandler.core() {
@@ -150,4 +155,9 @@ fun DependencyHandler.circularImage() {
 
 fun DependencyHandler.glide() {
     implementation(Dependencies.glide)
+}
+fun DependencyHandler.media3() {
+    implementation(Dependencies.media3ExoPlayer)
+    implementation(Dependencies.media3ExoPlayerDash)
+    implementation(Dependencies.media3Ui)
 }

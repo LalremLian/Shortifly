@@ -1,5 +1,7 @@
+
 package com.lazydeveloper.shortifly.ui.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Handler
@@ -9,14 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.lazydeveloper.shortifly.ExoPlayerItem
 import com.lazydeveloper.shortifly.data.models.Video
 import com.lazydeveloper.shortifly.databinding.SingleVideoRowBinding
@@ -69,7 +71,7 @@ class ShortsAdapter(
                     Toast.makeText(context, "Can't play this video", Toast.LENGTH_SHORT).show()
                 }
 
-                @Deprecated("Deprecated in Java")
+                @SuppressLint("UnsafeOptInUsageError")
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     binding.pbLoading.visibility =
                         if (playbackState == Player.STATE_BUFFERING) View.VISIBLE else View.GONE
@@ -102,8 +104,9 @@ class ShortsAdapter(
                 itemClickListener?.onItemClick(position = absoluteAdapterPosition)
             }
             binding.exoPlayer.setOnClickListener {
-                Toast.makeText(context, "Play", Toast.LENGTH_SHORT).show()
-                itemClickListener?.onPlayerStateChange(position)
+                Toast.makeText(context, "Play/Pause", Toast.LENGTH_SHORT).show()
+//                itemClickListener?.onPlayerStateChange(position)
+                itemClickListener?.onItemClick(position = absoluteAdapterPosition)
             }
             binding.imgLikes.setOnClickListener {
                 Toast.makeText(context, "Like", Toast.LENGTH_SHORT).show()
@@ -126,6 +129,7 @@ class ShortsAdapter(
             binding.data = videoModel
         }
 
+        @SuppressLint("UnsafeOptInUsageError")
         fun setVideoPath(videoUrl: String) {
             exoPlayer.seekTo(0)
             mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)

@@ -9,50 +9,39 @@ import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
 import com.lazydeveloper.shortifly.ui.fragments.HomeFragment
 import com.lazydeveloper.shortifly.utils.extensions.diffCallback
-import com.lazydeveloper.shortifly.utils.extensions.onClick
 
 class SearchListAdapter(private val itemClickListener: HomeFragment) :
-    ListAdapter<VideoResult, SearchListAdapter.PostViewHolder>(
-        DIFF_CALLBACK
-    ) {
+    ListAdapter<VideoResult, SearchListAdapter.PostViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         private val DIFF_CALLBACK =
             diffCallback<VideoResult>(
-                areItemsTheSame = {oldItem, newItem -> oldItem == newItem },
-                areContentsTheSame = {oldItem, newItem -> oldItem == newItem }
+                areItemsTheSame = { oldItem, newItem -> oldItem == newItem },
+                areContentsTheSame = { oldItem, newItem -> oldItem == newItem }
             )
     }
 
-    class PostViewHolder private constructor(
-        private val binding: SingleSearchItemBinding,
-        private val itemClickListener: HomeFragment
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class PostViewHolder(private val binding: SingleSearchItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(item: VideoResult) {
             binding.data = item
             Glide.with(binding.root.context)
                 .load(item.thumbnail)
                 .into(binding.imgThumbnail)
 
-            binding.root onClick {
-                itemClickListener?.onItemClickListener(item)
-            }
-        }
-
-        companion object {
-            fun from(
-                parent: ViewGroup,
-                itemClickListener: HomeFragment
-            ): PostViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = SingleSearchItemBinding.inflate(layoutInflater, parent, false)
-                return PostViewHolder(binding, itemClickListener)
+            binding.root.setOnClickListener {
+                itemClickListener.onItemClickListener(item)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        return PostViewHolder.from(parent, itemClickListener)
+        val binding = SingleSearchItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return PostViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
