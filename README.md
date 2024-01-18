@@ -16,7 +16,7 @@ Users can explore different genres and discover new and exciting creators within
 Users can follow their favorite creators, and the app may prioritize content from followed creators in the user's feed.
 
 ### Technology used
-- Basic Fake Store API ([fakestoreapi.com](https://serpapi.com))
+- Basic Fake Store API ([serpapi.com](https://serpapi.com))
 - Used Third-Party Libraries
 - Media3 (Exo Player)
 - DI(Dipendency Injection)
