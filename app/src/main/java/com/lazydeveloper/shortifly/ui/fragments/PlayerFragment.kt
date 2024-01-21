@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +21,7 @@ import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.FragmentPlayerBinding
 import com.lazydeveloper.shortifly.player.PlayerViewModel
 import com.lazydeveloper.shortifly.ui.adapters.PlayerItemListAdapter
+import com.lazydeveloper.shortifly.ui.home.MainActivity
 import com.lazydeveloper.shortifly.utils.DataSet
 import com.lazydeveloper.shortifly.utils.extensions.formatTime
 import com.lazydeveloper.shortifly.utils.extensions.onClick
@@ -70,6 +72,9 @@ class PlayerFragment : Fragment() {
             adapter = postListAdapter
         }
         postListAdapter.submitList(DataSet.shortListForPlayerPage)
+        viewModel.isFullScreen.observe(viewLifecycleOwner) { isFullScreen ->
+            isFullScreen?.let { handleFullScreen(it) }
+        }
 
         // Observe the player visibility state in the ViewModel
         viewModel.playerVisibility.observe(viewLifecycleOwner) { isPlayerVisible ->
@@ -81,9 +86,26 @@ class PlayerFragment : Fragment() {
             viewModel.togglePlayerVisibility()
         }
 
+        binding.imgFullScreen onClick {
+            viewModel.toggleFullScreen(requireActivity())
+        }
+
         // Observe the player state in the ViewModel
         viewModel.playerState.observe(viewLifecycleOwner) { state ->
             handlePlayerState(state)
+        }
+    }
+    private fun handleFullScreen(isFullScreen: Boolean) {
+        val layoutParams = if (isFullScreen) {
+            ViewGroup.LayoutParams.MATCH_PARENT to ViewGroup.LayoutParams.MATCH_PARENT
+        } else {
+            ViewGroup.LayoutParams.WRAP_CONTENT to ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
+        // Adjust your Media3 view's layout parameters
+        binding.videoPlayer.layoutParams = binding.videoPlayer.layoutParams.apply {
+            width = layoutParams.first
+            height = layoutParams.second
         }
     }
 
@@ -116,15 +138,48 @@ class PlayerFragment : Fragment() {
         seekBarRunnable = Runnable { updateSeekBar() }
 
         binding.imgPlay onClick {
+            viewModel.playPause()
             if (viewModel.player.isPlaying) {
-                viewModel.player.pause()
-                binding.imgPlay.setImageResource(android.R.drawable.ic_media_play)
-            } else {
-                viewModel.player.play()
                 binding.imgPlay.setImageResource(android.R.drawable.ic_media_pause)
+            } else {
+                binding.imgPlay.setImageResource(android.R.drawable.ic_media_play)
+            }
+        }
+        binding.imgForward onClick {
+            viewModel.forward(10000)
+        }
+        binding.imgRewind onClick {
+            viewModel.rewind(10000)
+        }
+        val mainActivity = requireActivity() as MainActivity
+        // Observe the full-screen state
+        viewModel.isFullScreen.observe(viewLifecycleOwner) { isFullScreen ->
+            isFullScreen?.let { handleFullScreen(it) }
+            if (isFullScreen) {
+                mainActivity.setCustomHeaderVisibility(false)
+            } else {
+                mainActivity.setCustomHeaderVisibility(true)
             }
         }
 
+        // Observe the full-screen event
+        viewModel.fullscreenEvent.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { layoutParams ->
+                handleFullscreenEvent(layoutParams)
+            }
+        }
+    }
+    private fun handleFullscreenEvent(layoutParams: Pair<Int, Int>) {
+        // Handle layout parameters, e.g., adjust the view's size
+        var width = layoutParams.first
+        var height = layoutParams.second
+
+        // Adjust your Media3 view's layout parameters
+        binding.videoPlayer.layoutParams = binding.videoPlayer.layoutParams.apply {
+            width = width
+            height = height
+        }
+        // Add logic to handle other UI elements if needed
     }
 
     fun updateSeekBar() {

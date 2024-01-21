@@ -3,6 +3,7 @@ package com.lazydeveloper.shortifly.player
 
 import android.content.pm.ActivityInfo
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,22 +24,46 @@ import javax.inject.Inject
 class PlayerViewModel @Inject constructor(
     val player: Player,
 ) : ViewModel(), PlayerControls {
-
     //For the visibility of the player
     private val _playerVisibility = MutableLiveData<Boolean>()
     val playerVisibility: LiveData<Boolean> get() = _playerVisibility
-
-
     private val _playerState = MutableLiveData<Int>()
     val playerState: LiveData<Int> get() = _playerState
+    private var playbackPosition: Long = 0
+    private var playWhenReady: Boolean = false
 
+    private val _isFullScreen = MutableLiveData<Boolean>()
+    val isFullScreen: LiveData<Boolean> get() = _isFullScreen
 
+    private var originalWidth = 0
+    private var originalHeight = 0
+    private val _fullscreenEvent = MutableLiveData<Event<Pair<Int, Int>>>()
+    val fullscreenEvent: LiveData<Event<Pair<Int, Int>>> get() = _fullscreenEvent
 
-
-
-    // Initialize the visibility state in your ViewModel if needed
     init {
+        _isFullScreen.value = false
         _playerVisibility.value = true
+    }
+    fun toggleFullScreen(activity: FragmentActivity) {
+        val layoutParams = if (_isFullScreen.value == true) {
+            // Revert to normal mode
+            originalWidth to originalHeight
+        } else {
+            // Enter full-screen mode
+            originalWidth = activity.window.decorView.width
+            originalHeight = activity.window.decorView.height
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            0 to 0
+        }
+
+        _isFullScreen.value = !_isFullScreen.value!!
+
+        // Reset orientation when exiting full-screen mode
+        if (!_isFullScreen.value!!) {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+
+        _fullscreenEvent.value = Event(layoutParams)
     }
 
     suspend fun setPlayerVisibility() {
@@ -51,32 +76,17 @@ class PlayerViewModel @Inject constructor(
         _playerVisibility.value = !_playerVisibility.value!!
     }
 
-
-    
     private val isPlayingStateFlow = MutableStateFlow(true)
 //    val isPlayingStateFlow = _isPlayingStateFlow.asStateFlow()
-    
+
     private val _isPlaybackStartedStateFlow = MutableStateFlow(false)
     val isPlaybackStartedStateFlow = _isPlaybackStartedStateFlow.asStateFlow()
-    
+
     private val _isPlayerLoadingStateFlow = MutableStateFlow(true)
     val isPlayerLoadingStateFlow = _isPlayerLoadingStateFlow.asStateFlow()
-    
-//    private val _currentVideoItemStateFlow = MutableStateFlow<VideoItem?>(null)
-//    val currentVideoItemStateFlow = _currentVideoItemStateFlow.asStateFlow()
-    
-//    private val _resizeModeStateFlow = MutableStateFlow(AspectRatioFrameLayout.RESIZE_MODE_FIT)
-//    val resizeModeStateFlow = _resizeModeStateFlow.asStateFlow()
-    
-    private val _playerOrientationStateFlow = MutableStateFlow(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-    val playerOrientationStateFlow = _playerOrientationStateFlow.asStateFlow()
-    
-//    init {
-//        player.apply { prepare() }
-//    }
 
-//    private val _playbackState = MutableStateFlow<Player.State>(Player.STATE_IDLE)
-//    val playbackState: StateFlow<Player.State> = _playbackState
+    private val _playerOrientationStateFlow = MutableStateFlow(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    private val playerOrientationStateFlow = _playerOrientationStateFlow.asStateFlow()
 
     private val _duration = MutableStateFlow<Long>(0)
     val duration: StateFlow<Long> = _duration
@@ -113,8 +123,6 @@ class PlayerViewModel @Inject constructor(
 
     private fun initializePlayer() {
         // Initialize your player here
-        // ...
-
         // Add a listener to observe player events
         player.addListener(object : Player.Listener {
             override fun onPlayerError(error: PlaybackException) {
@@ -135,9 +143,6 @@ class PlayerViewModel @Inject constructor(
             }
         })
     }
-
-    var playbackPosition: Long = 0
-    var playWhenReady: Boolean = false
 
     fun releasePlayer() {
         player.let { player ->
@@ -202,7 +207,7 @@ class PlayerViewModel @Inject constructor(
 //        player.clearMediaItems()
 //        updateCurrentVideoItem(item)
 //    }
-    
+
     override fun setLoadingState(value: Boolean) {
         _isPlayerLoadingStateFlow.value = value
     }
@@ -210,7 +215,7 @@ class PlayerViewModel @Inject constructor(
     override fun isPlaybackStarted(value: Boolean) {
         _isPlaybackStartedStateFlow.value = value
     }
-    
+
     companion object {
         const val TAG = "PlayerViewModel"
     }
@@ -224,3 +229,18 @@ class PlayerViewModel @Inject constructor(
     val resizeMode: Int = AspectRatioFrameLayout.RESIZE_MODE_FIT,
     val orientation: Int = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 )
+class Event<out T>(private val content: T) {
+
+    private var hasBeenHandled = false
+
+    fun getContentIfNotHandled(): T? {
+        return if (hasBeenHandled) {
+            null
+        } else {
+            hasBeenHandled = true
+            content
+        }
+    }
+
+    fun peekContent(): T = content
+}
