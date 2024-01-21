@@ -1,14 +1,19 @@
+
 package com.lazydeveloper.shortifly.player
 
 import android.content.pm.ActivityInfo
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +23,35 @@ import javax.inject.Inject
 class PlayerViewModel @Inject constructor(
     val player: Player,
 ) : ViewModel(), PlayerControls {
+
+    //For the visibility of the player
+    private val _playerVisibility = MutableLiveData<Boolean>()
+    val playerVisibility: LiveData<Boolean> get() = _playerVisibility
+
+
+    private val _playerState = MutableLiveData<Int>()
+    val playerState: LiveData<Int> get() = _playerState
+
+
+
+
+
+    // Initialize the visibility state in your ViewModel if needed
+    init {
+        _playerVisibility.value = true
+    }
+
+    suspend fun setPlayerVisibility() {
+        delay(2500).apply {
+            _playerVisibility.value = false
+        }
+    }
+
+    fun togglePlayerVisibility() {
+        _playerVisibility.value = !_playerVisibility.value!!
+    }
+
+
     
     private val isPlayingStateFlow = MutableStateFlow(true)
 //    val isPlayingStateFlow = _isPlayingStateFlow.asStateFlow()
@@ -31,8 +65,8 @@ class PlayerViewModel @Inject constructor(
 //    private val _currentVideoItemStateFlow = MutableStateFlow<VideoItem?>(null)
 //    val currentVideoItemStateFlow = _currentVideoItemStateFlow.asStateFlow()
     
-    private val _resizeModeStateFlow = MutableStateFlow(AspectRatioFrameLayout.RESIZE_MODE_FIT)
-    val resizeModeStateFlow = _resizeModeStateFlow.asStateFlow()
+//    private val _resizeModeStateFlow = MutableStateFlow(AspectRatioFrameLayout.RESIZE_MODE_FIT)
+//    val resizeModeStateFlow = _resizeModeStateFlow.asStateFlow()
     
     private val _playerOrientationStateFlow = MutableStateFlow(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val playerOrientationStateFlow = _playerOrientationStateFlow.asStateFlow()
@@ -74,6 +108,43 @@ class PlayerViewModel @Inject constructor(
             }
         }
         player.apply { prepare() }
+        initializePlayer()
+    }
+
+    private fun initializePlayer() {
+        // Initialize your player here
+        // ...
+
+        // Add a listener to observe player events
+        player.addListener(object : Player.Listener {
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+                // Notify the Fragment/Activity about the player error
+                _playerState.postValue(Player.STATE_READY)
+            }
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+                // Notify the Fragment/Activity about the playback state change
+                _playerState.postValue(Player.STATE_READY)
+            }
+
+            override fun onPlaybackStateChanged(state: Int) {
+                super.onPlaybackStateChanged(state)
+                // Notify the Fragment/Activity about the playback state change
+                _playerState.postValue(state)
+            }
+        })
+    }
+
+    var playbackPosition: Long = 0
+    var playWhenReady: Boolean = false
+
+    fun releasePlayer() {
+        player.let { player ->
+            playbackPosition = player.currentPosition
+            playWhenReady = player.playWhenReady
+            player.release()
+        }
     }
     
     override fun playPause() {

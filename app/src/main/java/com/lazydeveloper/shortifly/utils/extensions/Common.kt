@@ -66,6 +66,12 @@ inline fun <reified T> Fragment.openActivity(extras: Intent.() -> Unit = {}) {
     startActivity(intent)
 }
 
+fun Long.formatTime(): String {
+    val seconds = this / 1000
+    val minutes = seconds / 60
+    return String.format("%02d:%02d", seconds % 60, minutes % 60)
+}
+
 fun randomNumber(): Int {
     val min = 10000
     val max = 99999

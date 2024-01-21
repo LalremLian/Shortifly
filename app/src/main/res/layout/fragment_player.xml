@@ -15,7 +15,7 @@
     </androidx.media3.ui.PlayerView>
 
     <View
-        android:id="@+id/overlay"
+        android:id="@+id/playerOverlay"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
@@ -30,9 +30,9 @@
         android:visibility="gone"
         android:src="@android:drawable/ic_media_pause"
         app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
-        app:layout_constraintEnd_toEndOf="@+id/overlay"
+        app:layout_constraintEnd_toEndOf="@+id/playerOverlay"
         app:layout_constraintStart_toStartOf="@+id/videoPlayer"
-        app:layout_constraintTop_toTopOf="@+id/overlay" />
+        app:layout_constraintTop_toTopOf="@+id/playerOverlay" />
 
     <ImageView
         android:id="@+id/img_forward"

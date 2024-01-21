@@ -100,9 +100,9 @@ class ShortsAdapter(
             seekBarHandler = Handler()
             seekBarRunnable = Runnable { updateSeekBar() }
 
-            binding.root.setOnClickListener {
-                itemClickListener?.onItemClick(position = absoluteAdapterPosition)
-            }
+//            binding.root.setOnClickListener {
+//                itemClickListener?.onItemClick(position = absoluteAdapterPosition)
+//            }
             binding.exoPlayer.setOnClickListener {
                 Toast.makeText(context, "Play/Pause", Toast.LENGTH_SHORT).show()
 //                itemClickListener?.onPlayerStateChange(position)

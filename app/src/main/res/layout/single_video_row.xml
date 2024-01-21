@@ -225,6 +225,7 @@
             android:max="100"
             android:splitTrack="false"
             android:progressTint="#BA0303"
+            style="@style/CustomSeekBar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
