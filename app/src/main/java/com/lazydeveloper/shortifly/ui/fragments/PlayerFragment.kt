@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -23,14 +22,14 @@ import com.lazydeveloper.shortifly.player.PlayerViewModel
 import com.lazydeveloper.shortifly.ui.adapters.PlayerItemListAdapter
 import com.lazydeveloper.shortifly.ui.home.MainActivity
 import com.lazydeveloper.shortifly.utils.DataSet
-import com.lazydeveloper.shortifly.utils.extensions.formatTime
 import com.lazydeveloper.shortifly.utils.extensions.onClick
+import com.lazydeveloper.shortifly.utils.extensions.showBottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class PlayerFragment : Fragment() {
-    private val postListAdapter: PlayerItemListAdapter by lazy { PlayerItemListAdapter(this) }
+    private val postListAdapter: PlayerItemListAdapter by lazy { PlayerItemListAdapter() }
 
     private val viewModel: PlayerViewModel by viewModels()
 
@@ -65,6 +64,7 @@ class PlayerFragment : Fragment() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun initViews() {
         binding.recyclerView.apply {
             setHasFixedSize(true)
@@ -72,9 +72,6 @@ class PlayerFragment : Fragment() {
             adapter = postListAdapter
         }
         postListAdapter.submitList(DataSet.shortListForPlayerPage)
-        viewModel.isFullScreen.observe(viewLifecycleOwner) { isFullScreen ->
-            isFullScreen?.let { handleFullScreen(it) }
-        }
 
         // Observe the player visibility state in the ViewModel
         viewModel.playerVisibility.observe(viewLifecycleOwner) { isPlayerVisible ->
@@ -86,6 +83,10 @@ class PlayerFragment : Fragment() {
             viewModel.togglePlayerVisibility()
         }
 
+        binding.imgSettings onClick {
+            showBottomSheetDialog(R.layout.resolution_bottom_sheet)
+        }
+
         binding.imgFullScreen onClick {
             viewModel.toggleFullScreen(requireActivity())
         }
@@ -94,12 +95,25 @@ class PlayerFragment : Fragment() {
         viewModel.playerState.observe(viewLifecycleOwner) { state ->
             handlePlayerState(state)
         }
+
+        // Observe the watchTime property
+        lifecycleScope.launch {
+            viewModel.watchTime.collect { watchTime ->
+                // Update your UI with the current watch time
+                updateUIWithWatchTime(watchTime)
+            }
+        }
+    }
+    private fun updateUIWithWatchTime(watchTime: Long) {
+        // Update your UI elements with the current watch time
+        // ex: textViewWatchTime.text = formatWatchTime(watchTime)
+        binding.txtCurrentTime.text = watchTime.toString()
     }
     private fun handleFullScreen(isFullScreen: Boolean) {
         val layoutParams = if (isFullScreen) {
             ViewGroup.LayoutParams.MATCH_PARENT to ViewGroup.LayoutParams.MATCH_PARENT
         } else {
-            ViewGroup.LayoutParams.WRAP_CONTENT to ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT to 610
         }
 
         // Adjust your Media3 view's layout parameters
@@ -161,25 +175,9 @@ class PlayerFragment : Fragment() {
                 mainActivity.setCustomHeaderVisibility(true)
             }
         }
-
-        // Observe the full-screen event
-        viewModel.fullscreenEvent.observe(viewLifecycleOwner) { event ->
-            event.getContentIfNotHandled()?.let { layoutParams ->
-                handleFullscreenEvent(layoutParams)
-            }
+        viewModel.isFullScreen.observe(viewLifecycleOwner) { isFullScreen ->
+            isFullScreen?.let { handleFullScreen(it) }
         }
-    }
-    private fun handleFullscreenEvent(layoutParams: Pair<Int, Int>) {
-        // Handle layout parameters, e.g., adjust the view's size
-        var width = layoutParams.first
-        var height = layoutParams.second
-
-        // Adjust your Media3 view's layout parameters
-        binding.videoPlayer.layoutParams = binding.videoPlayer.layoutParams.apply {
-            width = width
-            height = height
-        }
-        // Add logic to handle other UI elements if needed
     }
 
     fun updateSeekBar() {
@@ -199,7 +197,7 @@ class PlayerFragment : Fragment() {
             Player.STATE_READY -> {
                 val duration = viewModel.player.duration
                 val currentPosition = viewModel.player.currentPosition
-                updateUiWithCurrentPosition(currentPosition)
+//                updateUiWithCurrentPosition(currentPosition)
                 updateSeekBar()
             }
             Player.STATE_BUFFERING -> {
@@ -212,30 +210,25 @@ class PlayerFragment : Fragment() {
     private fun updateUiWithCurrentPosition(currentPosition: Long) {
         // Update your TextView or any other UI element with the current position
         // For example, if you have a TextView named currentPositionTextView:
-        binding.txtCurrentTime.text = currentPosition.formatTime()
+//        binding.txtCurrentTime.text = currentPosition.formatTime()
     }
 
     @SuppressLint("ResourceAsColor")
     private fun updatePlayerVisibility(isPlayerVisible: Boolean) {
-        if (isPlayerVisible) {
-            binding.playerOverlay.setBackgroundColor(R.color.black)
-            binding.imgPlay.visibility = View.VISIBLE
-            binding.imgRewind.visibility = View.VISIBLE
-            binding.imgForward.visibility = View.VISIBLE
-            binding.imgSettings.visibility = View.VISIBLE
-            binding.imgFullScreen.visibility = View.VISIBLE
-            binding.txtCurrentTime.visibility = View.VISIBLE
-            binding.txtDuration.visibility = View.VISIBLE
-        } else {
-            binding.playerOverlay.setBackgroundColor(Color.TRANSPARENT)
-            binding.imgPlay.visibility = View.GONE
-            binding.imgRewind.visibility = View.GONE
-            binding.imgForward.visibility = View.GONE
-            binding.imgSettings.visibility = View.GONE
-            binding.imgFullScreen.visibility = View.GONE
-            binding.txtCurrentTime.visibility = View.GONE
-            binding.txtDuration.visibility = View.GONE
-        }
+        val visibility = if (isPlayerVisible) View.VISIBLE else View.GONE
+
+        binding.playerOverlay.setBackgroundColor(
+            if (isPlayerVisible) R.color.black
+            else Color.TRANSPARENT
+        )
+
+        binding.imgPlay.visibility = visibility
+        binding.imgRewind.visibility = visibility
+        binding.imgForward.visibility = visibility
+        binding.imgSettings.visibility = visibility
+        binding.imgFullScreen.visibility = visibility
+        binding.txtCurrentTime.visibility = visibility
+        binding.txtDuration.visibility = visibility
     }
 
     override fun onStop() {

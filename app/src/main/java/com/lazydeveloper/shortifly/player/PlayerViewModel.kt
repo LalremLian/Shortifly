@@ -2,6 +2,7 @@
 package com.lazydeveloper.shortifly.player
 
 import android.content.pm.ActivityInfo
+import android.content.res.Resources
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
@@ -37,8 +38,12 @@ class PlayerViewModel @Inject constructor(
 
     private var originalWidth = 0
     private var originalHeight = 0
-    private val _fullscreenEvent = MutableLiveData<Event<Pair<Int, Int>>>()
-    val fullscreenEvent: LiveData<Event<Pair<Int, Int>>> get() = _fullscreenEvent
+
+    private val _watchTime = MutableStateFlow(0L)
+    val watchTime: StateFlow<Long> = _watchTime
+    private var playbackStartPosition: Long = 0
+    private var playbackStartTime: Long = 0
+    private var isPlaying = false
 
     init {
         _isFullScreen.value = false
@@ -55,15 +60,16 @@ class PlayerViewModel @Inject constructor(
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             0 to 0
         }
-
         _isFullScreen.value = !_isFullScreen.value!!
-
         // Reset orientation when exiting full-screen mode
         if (!_isFullScreen.value!!) {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
-
-        _fullscreenEvent.value = Event(layoutParams)
+    }
+    private fun calculateFixedHeight(): Int {
+        // Calculate and return the fixed height based on your requirements
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        return screenHeight / 2
     }
 
     suspend fun setPlayerVisibility() {
@@ -140,8 +146,39 @@ class PlayerViewModel @Inject constructor(
                 super.onPlaybackStateChanged(state)
                 // Notify the Fragment/Activity about the playback state change
                 _playerState.postValue(state)
+                when (state) {
+                    Player.STATE_IDLE -> {
+                        // Video playback is idle
+                        updateWatchTime()
+                    }
+                    Player.STATE_BUFFERING -> {
+                        // Video is buffering
+                    }
+                    Player.STATE_READY -> {
+                        // Video is ready to play
+                        if (!isPlaying) {
+                            playbackStartTime = System.currentTimeMillis()
+                            isPlaying = true
+                        }
+                        updateWatchTime()
+                    }
+                    Player.STATE_ENDED -> {
+                        // Video playback ended
+                        isPlaying = false
+                        updateWatchTime()
+                    }
+                }
             }
         })
+    }
+    private fun updateWatchTime() {
+        val currentPosition = player.currentPosition
+        val elapsedTime = if (isPlaying) {
+            System.currentTimeMillis() - playbackStartTime
+        } else {
+            0
+        }
+        _watchTime.value = playbackStartPosition + currentPosition + elapsedTime
     }
 
     fun releasePlayer() {
@@ -216,9 +253,6 @@ class PlayerViewModel @Inject constructor(
         _isPlaybackStartedStateFlow.value = value
     }
 
-    companion object {
-        const val TAG = "PlayerViewModel"
-    }
 }
 
 @UnstableApi data class PlayerState(
@@ -229,18 +263,3 @@ class PlayerViewModel @Inject constructor(
     val resizeMode: Int = AspectRatioFrameLayout.RESIZE_MODE_FIT,
     val orientation: Int = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
 )
-class Event<out T>(private val content: T) {
-
-    private var hasBeenHandled = false
-
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) {
-            null
-        } else {
-            hasBeenHandled = true
-            content
-        }
-    }
-
-    fun peekContent(): T = content
-}

@@ -9,8 +9,9 @@ import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
 import com.lazydeveloper.shortifly.ui.fragments.HomeFragment
 import com.lazydeveloper.shortifly.utils.extensions.diffCallback
+import com.lazydeveloper.shortifly.utils.extensions.onClick
 
-class SearchListAdapter(private val itemClickListener: HomeFragment) :
+class SearchListAdapter(private val itemClickListener: ItemClickListener) :
     ListAdapter<VideoResult, SearchListAdapter.PostViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -29,8 +30,11 @@ class SearchListAdapter(private val itemClickListener: HomeFragment) :
                 .load(item.thumbnail)
                 .into(binding.imgThumbnail)
 
-            binding.root.setOnClickListener {
+            binding.root onClick  {
                 itemClickListener.onItemClickListener(item)
+            }
+            binding.imgMore onClick {
+                itemClickListener.onMoreClickListener(item)
             }
         }
     }
@@ -51,5 +55,6 @@ class SearchListAdapter(private val itemClickListener: HomeFragment) :
 
     interface ItemClickListener {
         fun onItemClickListener(item: VideoResult)
+        fun onMoreClickListener(item: VideoResult)
     }
 }

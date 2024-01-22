@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
 import com.lazydeveloper.shortifly.ui.fragments.PlayerFragment
 import com.lazydeveloper.shortifly.utils.extensions.diffCallback
 import com.lazydeveloper.shortifly.utils.extensions.onClick
 
-class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
+class PlayerItemListAdapter :
     ListAdapter<VideoResult, PlayerItemListAdapter.PostViewHolder>(
         DIFF_CALLBACK
     ) {
@@ -37,6 +38,7 @@ class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
 
             Glide.with(binding.root.context)
                 .load(item.thumbnail)
+                .placeholder(R.drawable.loading)
                 .into(binding.imgThumbnail)
 
             binding.root onClick {
@@ -46,18 +48,17 @@ class PlayerItemListAdapter(private val itemClickListener: PlayerFragment) :
 
         companion object {
             fun from(
-                parent: ViewGroup,
-                itemClickListener: PlayerFragment
+                parent: ViewGroup
             ): PostViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = SingleSearchItemBinding.inflate(layoutInflater, parent, false)
-                return PostViewHolder(binding, itemClickListener)
+                return PostViewHolder(binding, PlayerFragment())
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        return PostViewHolder.from(parent, itemClickListener)
+        return PostViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {

@@ -10,7 +10,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.databinding.ActivityMainBinding
-import com.lazydeveloper.shortifly.ui.fragments.BottomSheetFragment
+import com.lazydeveloper.shortifly.utils.extensions.onClick
+import com.lazydeveloper.shortifly.utils.extensions.showBottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -48,9 +49,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.floatingButton.setOnClickListener {
-            val bottomSheetFragment = BottomSheetFragment()
-            bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+        binding.floatingButton onClick {
+            showBottomSheetDialog(R.layout.fragment_bottom_sheet)
         }
 
         binding.customHeader.circleImageProfile.setOnClickListener {

@@ -27,9 +27,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.ui.home.MainActivity
 import java.util.*
@@ -70,6 +72,21 @@ fun Long.formatTime(): String {
     val seconds = this / 1000
     val minutes = seconds / 60
     return String.format("%02d:%02d", seconds % 60, minutes % 60)
+}
+
+fun AppCompatActivity.showBottomSheetDialog(layoutResId: Int) {
+    val dialogView = layoutInflater.inflate(layoutResId, null)
+    val dialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
+    dialog.setContentView(dialogView)
+    dialog.show()
+}
+fun Fragment.showBottomSheetDialog(layoutResId: Int) {
+    context?.let {
+        val dialogView = LayoutInflater.from(it).inflate(layoutResId, null)
+        val dialog = BottomSheetDialog(it, R.style.BottomSheetDialogTheme)
+        dialog.setContentView(dialogView)
+        dialog.show()
+    }
 }
 
 fun randomNumber(): Int {

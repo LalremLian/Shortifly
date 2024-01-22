@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="430dp"
+    app:cardCornerRadius="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#171717">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="-6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_modal_bar" />
+
+        <ImageView
+            android:id="@+id/imgPlayNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:srcCompat="@drawable/ic_play_next" />
+
+        <TextView
+            android:id="@+id/txtPlayNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
+            android:text="Play next in queue"
+            app:layout_constraintBottom_toBottomOf="@+id/imgPlayNext"
+            app:layout_constraintStart_toEndOf="@+id/imgPlayNext"
+            app:layout_constraintTop_toTopOf="@+id/imgPlayNext" />
+
+        <ImageView
+            android:id="@+id/imgSaveToWatchLater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgPlayNext"
+            app:srcCompat="@drawable/ic_save_to_playlist" />
+
+        <TextView
+            android:id="@+id/txtSaveToWatchLater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Save to Watch later"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgSaveToWatchLater"
+            app:layout_constraintStart_toEndOf="@+id/imgSaveToWatchLater"
+            app:layout_constraintTop_toTopOf="@+id/imgSaveToWatchLater" />
+
+        <ImageView
+            android:id="@+id/imgSaveToPlaylist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgSaveToWatchLater"
+            app:srcCompat="@drawable/ic_save_to_watch_later" />
+
+        <TextView
+            android:id="@+id/txtSaveToPlayList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Save to playlist"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgSaveToPlaylist"
+            app:layout_constraintStart_toEndOf="@+id/imgSaveToPlaylist"
+            app:layout_constraintTop_toTopOf="@+id/imgSaveToPlaylist" />
+
+        <ImageView
+            android:id="@+id/imgDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgSaveToPlaylist"
+            app:srcCompat="@drawable/ic_download" />
+
+        <TextView
+            android:id="@+id/txtDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Download video"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgDownload"
+            app:layout_constraintStart_toEndOf="@+id/imgDownload"
+            app:layout_constraintTop_toTopOf="@+id/imgDownload" />
+
+        <ImageView
+            android:id="@+id/imgNotInterested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgDownload"
+            app:srcCompat="@drawable/ic_dont_distrub" />
+
+        <TextView
+            android:id="@+id/txtNotInterested"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Not interested"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgNotInterested"
+            app:layout_constraintStart_toEndOf="@+id/imgNotInterested"
+            app:layout_constraintTop_toTopOf="@+id/imgNotInterested" />
+
+        <ImageView
+            android:id="@+id/imgShareic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgNotInterested"
+            app:srcCompat="@drawable/ic_share" />
+
+        <TextView
+            android:id="@+id/txtShareic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Share"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgShareic"
+            app:layout_constraintStart_toEndOf="@+id/imgShareic"
+            app:layout_constraintTop_toTopOf="@+id/imgShareic" />
+
+        <ImageView
+            android:id="@+id/imgReport"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgShareic"
+            app:srcCompat="@drawable/ic_add" />
+
+        <TextView
+            android:id="@+id/txtReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Report"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgReport"
+            app:layout_constraintStart_toEndOf="@+id/imgReport"
+            app:layout_constraintTop_toTopOf="@+id/imgReport" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -4,23 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.coroutine.Resource
 import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.FragmentHomeBinding
 import com.lazydeveloper.shortifly.ui.adapters.SearchListAdapter
+import com.lazydeveloper.shortifly.utils.extensions.showBottomSheetDialog
 import com.lazydeveloper.shortifly.viewmodels.HomeFragViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : BottomSheetDialogFragment() {
+class HomeFragment : Fragment(), SearchListAdapter.ItemClickListener {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeFragViewModel by viewModels()
     private val postListAdapter: SearchListAdapter by lazy { SearchListAdapter(this) }
@@ -68,7 +69,7 @@ class HomeFragment : BottomSheetDialogFragment() {
         }
     }
 
-    fun onItemClickListener(item: VideoResult) {
+    override fun onItemClickListener(item: VideoResult) {
         val gson = Gson()
         val jsonString = gson.toJson(item)
         val navController = findNavController()
@@ -76,6 +77,10 @@ class HomeFragment : BottomSheetDialogFragment() {
         navController.navigate(R.id.action_homeFragment2_to_playerFragment2, Bundle().apply {
             putString("data", jsonString)
         })
+    }
+
+    override fun onMoreClickListener(item: VideoResult) {
+        showBottomSheetDialog(R.layout.single_menu_bottom_sheet)
     }
 
 }

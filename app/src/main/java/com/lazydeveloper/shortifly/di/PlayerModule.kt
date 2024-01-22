@@ -6,7 +6,6 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
-import com.google.android.gms.cast.framework.CastContext
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,18 +23,5 @@ object PlayerModule {
         return ExoPlayer.Builder(app)
             .setTrackSelector(trackSelector)
             .build()
-    }
-
-    // Cast
-    @Provides
-    @ViewModelScoped
-    fun provideCastContext(app: Application): CastContext {
-        return CastContext.getSharedInstance(app)
-    }
-
-    @Provides
-    @ViewModelScoped
-    fun provideMediaRouter(app: Application): androidx.mediarouter.media.MediaRouter {
-        return androidx.mediarouter.media.MediaRouter.getInstance(app)
     }
 }
