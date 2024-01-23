@@ -1,19 +1,28 @@
-
 package com.lazydeveloper.shortifly.player
 
+import android.content.Context
 import android.content.pm.ActivityInfo
-import android.content.res.Resources
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import androidx.annotation.OptIn
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.TrackSelectionParameters
+import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.exoplayer.trackselection.MappingTrackSelector
 import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.TrackSelectionDialogBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +30,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
+@UnstableApi
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    val player: Player,
+    val player: ExoPlayer,
+    val trackSelector: DefaultTrackSelector
 ) : ViewModel(), PlayerControls {
     //For the visibility of the player
     private val _playerVisibility = MutableLiveData<Boolean>()
@@ -44,13 +55,21 @@ class PlayerViewModel @Inject constructor(
     private var playbackStartPosition: Long = 0
     private var playbackStartTime: Long = 0
     private var isPlaying = false
+    var videoDuration = 0L
 
     init {
         _isFullScreen.value = false
         _playerVisibility.value = true
     }
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnable = object : Runnable {
+        override fun run() {
+            updateWatchTime()
+            handler.postDelayed(this, 1000)
+        }
+    }
     fun toggleFullScreen(activity: FragmentActivity) {
-        val layoutParams = if (_isFullScreen.value == true) {
+        if (_isFullScreen.value == true) {
             // Revert to normal mode
             originalWidth to originalHeight
         } else {
@@ -66,11 +85,6 @@ class PlayerViewModel @Inject constructor(
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
-    private fun calculateFixedHeight(): Int {
-        // Calculate and return the fixed height based on your requirements
-        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-        return screenHeight / 2
-    }
 
     suspend fun setPlayerVisibility() {
         delay(2500).apply {
@@ -85,37 +99,23 @@ class PlayerViewModel @Inject constructor(
     private val isPlayingStateFlow = MutableStateFlow(true)
 //    val isPlayingStateFlow = _isPlayingStateFlow.asStateFlow()
 
-    private val _isPlaybackStartedStateFlow = MutableStateFlow(false)
-    val isPlaybackStartedStateFlow = _isPlaybackStartedStateFlow.asStateFlow()
 
-    private val _isPlayerLoadingStateFlow = MutableStateFlow(true)
-    val isPlayerLoadingStateFlow = _isPlayerLoadingStateFlow.asStateFlow()
-
-    private val _playerOrientationStateFlow = MutableStateFlow(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-    private val playerOrientationStateFlow = _playerOrientationStateFlow.asStateFlow()
-
-    private val _duration = MutableStateFlow<Long>(0)
-    val duration: StateFlow<Long> = _duration
-
-    private val _currentPosition = MutableStateFlow<Long>(0)
-    val currentPosition: StateFlow<Long> = _currentPosition
-    
     override fun onCleared() {
         super.onCleared()
         player.release()
     }
-    
+
 //    private fun updateCurrentVideoItem(videoItem: VideoItem) {
 //        _currentVideoItemStateFlow.value = videoItem
 //        setMediaItem(videoItem.contentUri)
 //    }
-    
+
     fun setMediaItem(uri: Uri) {
         val mediaItem = MediaItem.Builder()
             .setUri(uri)
             .setMimeType(MimeTypes.APPLICATION_MP4)
             .build()
-        
+
         player.apply {
             addMediaItem(mediaItem)
             playWhenReady = true
@@ -124,9 +124,14 @@ class PlayerViewModel @Inject constructor(
             }
         }
         player.apply { prepare() }
+        videoDuration = player.duration
         initializePlayer()
     }
 
+    private val _currentPosition2 = MutableLiveData<Long>()
+    val currentPosition2: LiveData<Long> get() = _currentPosition2
+
+    @OptIn(UnstableApi::class)
     private fun initializePlayer() {
         // Initialize your player here
         // Add a listener to observe player events
@@ -136,8 +141,26 @@ class PlayerViewModel @Inject constructor(
                 // Notify the Fragment/Activity about the player error
                 _playerState.postValue(Player.STATE_READY)
             }
+
+            override fun onTrackSelectionParametersChanged(parameters: TrackSelectionParameters) {
+                super.onTrackSelectionParametersChanged(parameters)
+                Log.e("VideoScreen", "onTrackSelectionParametersChanged")
+                val currentProgressTime = player.currentPosition
+                player.stop()
+                player.seekTo(currentProgressTime)
+                player.apply {
+                    prepare()
+                    playWhenReady = true
+                }
+            }
+
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
+                if (isPlaying) {
+                    handler.post(runnable)
+                } else {
+                    handler.removeCallbacks(runnable)
+                }
                 // Notify the Fragment/Activity about the playback state change
                 _playerState.postValue(Player.STATE_READY)
             }
@@ -148,14 +171,12 @@ class PlayerViewModel @Inject constructor(
                 _playerState.postValue(state)
                 when (state) {
                     Player.STATE_IDLE -> {
-                        // Video playback is idle
                         updateWatchTime()
                     }
                     Player.STATE_BUFFERING -> {
-                        // Video is buffering
+                        updateWatchTime()
                     }
                     Player.STATE_READY -> {
-                        // Video is ready to play
                         if (!isPlaying) {
                             playbackStartTime = System.currentTimeMillis()
                             isPlaying = true
@@ -163,7 +184,6 @@ class PlayerViewModel @Inject constructor(
                         updateWatchTime()
                     }
                     Player.STATE_ENDED -> {
-                        // Video playback ended
                         isPlaying = false
                         updateWatchTime()
                     }
@@ -171,7 +191,36 @@ class PlayerViewModel @Inject constructor(
             }
         })
     }
+
+    fun trackSelection(context: Context) {
+        val trackSelector = this.trackSelector
+        val mappedTrackInfo = trackSelector.currentMappedTrackInfo
+        if (mappedTrackInfo != null) {
+            /*            The index usually follows this order:
+                            0: video
+                            1: audio
+                            2: closed captions (text)*/
+            val rendererIndex = 2
+            val rendererType = mappedTrackInfo.getRendererType(rendererIndex)
+            val allowAdaptiveSelections =
+                rendererType == C.TRACK_TYPE_VIDEO
+                        || (rendererType == C.TRACK_TYPE_AUDIO
+                        && mappedTrackInfo.getTypeSupport(C.TRACK_TYPE_VIDEO)
+                        == MappingTrackSelector.MappedTrackInfo.RENDERER_SUPPORT_NO_TRACKS)
+
+            val builder =
+                TrackSelectionDialogBuilder(context, "Select Resolution", player, rendererIndex)
+            builder.setShowDisableOption(false)
+            builder.setAllowAdaptiveSelections(allowAdaptiveSelections)
+            builder.setOverrides(player.trackSelectionParameters.overrides)
+            builder.build().show()
+
+        }
+        player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
+    }
+
     private fun updateWatchTime() {
+        _currentPosition2.postValue(player.currentPosition)
         val currentPosition = player.currentPosition
         val elapsedTime = if (isPlaying) {
             System.currentTimeMillis() - playbackStartTime
@@ -188,7 +237,7 @@ class PlayerViewModel @Inject constructor(
             player.release()
         }
     }
-    
+
     override fun playPause() {
         if (player.isPlaying) {
             player.pause().also {
@@ -200,18 +249,28 @@ class PlayerViewModel @Inject constructor(
             }
         }
     }
+
     override fun forward(durationMs: Long) {
         player.apply {
             this.seekTo(this.currentPosition + durationMs)
         }
     }
+
     override fun rewind(durationMs: Long) {
         player.apply {
             this.seekTo(this.currentPosition - durationMs)
         }
     }
-    
+
     override fun pip() {
+        TODO("Not yet implemented")
+    }
+
+    override fun setLoadingState(value: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun isPlaybackStarted(value: Boolean) {
         TODO("Not yet implemented")
     }
 
@@ -226,15 +285,11 @@ class PlayerViewModel @Inject constructor(
             }
         }
     }
-    
+
     override fun rotateScreen() {
-        val orientation = if (playerOrientationStateFlow.value == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        } else {
-            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        }
-        _playerOrientationStateFlow.value = orientation
+        TODO("Not yet implemented")
     }
+
 
     override fun resizeVideoFrame() {
         TODO("Not yet implemented")
@@ -245,21 +300,5 @@ class PlayerViewModel @Inject constructor(
 //        updateCurrentVideoItem(item)
 //    }
 
-    override fun setLoadingState(value: Boolean) {
-        _isPlayerLoadingStateFlow.value = value
-    }
-
-    override fun isPlaybackStarted(value: Boolean) {
-        _isPlaybackStartedStateFlow.value = value
-    }
-
 }
 
-@UnstableApi data class PlayerState(
-    val isPlaying: Boolean = true,
-    val isPlaybackStarted: Boolean = false,
-    val isPlayerLoading: Boolean = true,
-//    val currentVideoItem: VideoItem? = null,
-    val resizeMode: Int = AspectRatioFrameLayout.RESIZE_MODE_FIT,
-    val orientation: Int = ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT
-)

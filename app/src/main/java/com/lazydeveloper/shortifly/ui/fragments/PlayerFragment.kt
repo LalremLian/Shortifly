@@ -9,11 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.TextView
+import androidx.annotation.OptIn
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.data.models.VideoResult
@@ -22,8 +26,8 @@ import com.lazydeveloper.shortifly.player.PlayerViewModel
 import com.lazydeveloper.shortifly.ui.adapters.PlayerItemListAdapter
 import com.lazydeveloper.shortifly.ui.home.MainActivity
 import com.lazydeveloper.shortifly.utils.DataSet
+import com.lazydeveloper.shortifly.utils.extensions.formatTime
 import com.lazydeveloper.shortifly.utils.extensions.onClick
-import com.lazydeveloper.shortifly.utils.extensions.showBottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,7 +59,7 @@ class PlayerFragment : Fragment() {
         binding.txtChannelName.text = videoResult.author
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    @OptIn(UnstableApi::class) override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         lifecycleScope.launch {
@@ -64,7 +68,7 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    @SuppressLint("InflateParams")
+    @OptIn(UnstableApi::class) @SuppressLint("InflateParams")
     private fun initViews() {
         binding.recyclerView.apply {
             setHasFixedSize(true)
@@ -84,7 +88,15 @@ class PlayerFragment : Fragment() {
         }
 
         binding.imgSettings onClick {
-            showBottomSheetDialog(R.layout.resolution_bottom_sheet)
+            val dialogView = layoutInflater.inflate(R.layout.resolution_bottom_sheet, null)
+            val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+            dialog.setContentView(dialogView)
+            val myButton = dialogView.findViewById<TextView>(R.id.txtResolution)
+            myButton.setOnClickListener {
+                viewModel.trackSelection(requireActivity())
+                dialog.dismiss()
+            }
+            dialog.show()
         }
 
         binding.imgFullScreen onClick {
@@ -96,19 +108,13 @@ class PlayerFragment : Fragment() {
             handlePlayerState(state)
         }
 
-        // Observe the watchTime property
-        lifecycleScope.launch {
-            viewModel.watchTime.collect { watchTime ->
-                // Update your UI with the current watch time
-                updateUIWithWatchTime(watchTime)
-            }
+        viewModel.currentPosition2.observe(viewLifecycleOwner) { currentPosition ->
+            // Update your UI with the current watch time
+            binding.txtCurrentTime.text = currentPosition.formatTime()
+            // Update your TextView or other UI elements
         }
     }
-    private fun updateUIWithWatchTime(watchTime: Long) {
-        // Update your UI elements with the current watch time
-        // ex: textViewWatchTime.text = formatWatchTime(watchTime)
-        binding.txtCurrentTime.text = watchTime.toString()
-    }
+
     private fun handleFullScreen(isFullScreen: Boolean) {
         val layoutParams = if (isFullScreen) {
             ViewGroup.LayoutParams.MATCH_PARENT to ViewGroup.LayoutParams.MATCH_PARENT
@@ -125,18 +131,18 @@ class PlayerFragment : Fragment() {
 
     fun onItemClickListener(item: VideoResult) {}
 
-    @SuppressLint("ResourceAsColor")
+    @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n")
     private fun preparePlayer() {
-        viewModel.setMediaItem(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+        viewModel.setMediaItem(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"))
         binding.videoPlayer.player = viewModel.player
         binding.videoPlayer.useController = false
+        binding.txtDuration.text = " / ${viewModel.videoDuration.formatTime()}"
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     val duration = viewModel.player.duration
                     val newPosition = (progress * duration) / 100
                     viewModel.player.seekTo(newPosition)
-                    binding.txtDuration.text = duration.toString()
                     updateSeekBar()
                 }
             }
@@ -195,9 +201,6 @@ class PlayerFragment : Fragment() {
                 // Handle idle state
             }
             Player.STATE_READY -> {
-                val duration = viewModel.player.duration
-                val currentPosition = viewModel.player.currentPosition
-//                updateUiWithCurrentPosition(currentPosition)
                 updateSeekBar()
             }
             Player.STATE_BUFFERING -> {
@@ -205,12 +208,6 @@ class PlayerFragment : Fragment() {
             }
             // Add other states as needed
         }
-    }
-
-    private fun updateUiWithCurrentPosition(currentPosition: Long) {
-        // Update your TextView or any other UI element with the current position
-        // For example, if you have a TextView named currentPositionTextView:
-//        binding.txtCurrentTime.text = currentPosition.formatTime()
     }
 
     @SuppressLint("ResourceAsColor")
@@ -229,24 +226,25 @@ class PlayerFragment : Fragment() {
         binding.imgFullScreen.visibility = visibility
         binding.txtCurrentTime.visibility = visibility
         binding.txtDuration.visibility = visibility
+        binding.seekBar.visibility = visibility
     }
 
-    override fun onStop() {
+    @OptIn(UnstableApi::class) override fun onStop() {
         super.onStop()
         viewModel.releasePlayer()
     }
 
-    override fun onPause() {
+    @OptIn(UnstableApi::class) override fun onPause() {
         super.onPause()
         viewModel.releasePlayer()
     }
 
-    override fun onDestroy() {
+    @OptIn(UnstableApi::class) override fun onDestroy() {
         super.onDestroy()
         viewModel.releasePlayer()
     }
 
-    override fun onDestroyView() {
+    @OptIn(UnstableApi::class) override fun onDestroyView() {
         super.onDestroyView()
         viewModel.releasePlayer()
     }

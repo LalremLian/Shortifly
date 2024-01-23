@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -35,6 +36,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.lazydeveloper.shortifly.R
 import com.lazydeveloper.shortifly.ui.home.MainActivity
 import java.util.*
+import kotlin.math.absoluteValue
 
 fun View.backPress() {
     this.setOnClickListener {
@@ -71,7 +73,7 @@ inline fun <reified T> Fragment.openActivity(extras: Intent.() -> Unit = {}) {
 fun Long.formatTime(): String {
     val seconds = this / 1000
     val minutes = seconds / 60
-    return String.format("%02d:%02d", seconds % 60, minutes % 60)
+    return String.format("%02d:%02d", minutes.absoluteValue % 60, seconds.absoluteValue % 60)
 }
 
 fun AppCompatActivity.showBottomSheetDialog(layoutResId: Int) {

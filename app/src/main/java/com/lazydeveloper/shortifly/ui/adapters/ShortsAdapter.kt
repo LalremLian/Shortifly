@@ -104,8 +104,6 @@ class ShortsAdapter(
 //                itemClickListener?.onItemClick(position = absoluteAdapterPosition)
 //            }
             binding.exoPlayer.setOnClickListener {
-                Toast.makeText(context, "Play/Pause", Toast.LENGTH_SHORT).show()
-//                itemClickListener?.onPlayerStateChange(position)
                 itemClickListener?.onItemClick(position = absoluteAdapterPosition)
             }
             binding.imgLikes.setOnClickListener {

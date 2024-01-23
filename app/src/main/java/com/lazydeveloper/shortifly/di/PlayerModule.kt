@@ -2,7 +2,6 @@ package com.lazydeveloper.shortifly.di
 
 import android.app.Application
 import androidx.annotation.OptIn
-import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -18,8 +17,13 @@ object PlayerModule {
 
     @OptIn(UnstableApi::class) @Provides
     @ViewModelScoped
-    fun provideVideoPlayer(app: Application): Player {
-        val trackSelector = DefaultTrackSelector(app)
+    fun provideTrackSelector(app: Application): DefaultTrackSelector {
+        return DefaultTrackSelector(app)
+    }
+
+    @OptIn(UnstableApi::class) @Provides
+    @ViewModelScoped
+    fun provideVideoPlayer(app: Application, trackSelector: DefaultTrackSelector): ExoPlayer {  // Change this line
         return ExoPlayer.Builder(app)
             .setTrackSelector(trackSelector)
             .build()

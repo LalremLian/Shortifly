@@ -13,7 +13,7 @@
         android:background="#171717">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/txtResolution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -33,7 +33,7 @@
             android:textColor="#AEFFFFFF"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/txtResolution" />
 
         <TextView
             android:id="@+id/textView3"
