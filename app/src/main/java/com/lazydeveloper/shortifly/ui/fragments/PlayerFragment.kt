@@ -1,12 +1,12 @@
 package com.lazydeveloper.shortifly.ui.fragments
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.OptIn
@@ -67,11 +67,10 @@ class PlayerFragment : Fragment() {
         initViews()
         lifecycleScope.launch {
             preparePlayer()
-            viewModel.setPlayerVisibility()
         }
     }
 
-    @OptIn(UnstableApi::class) @SuppressLint("InflateParams")
+    @OptIn(UnstableApi::class) @SuppressLint("InflateParams", "CutPasteId")
     private fun initViews() {
         binding.recyclerView.apply {
             setHasFixedSize(true)
@@ -80,45 +79,13 @@ class PlayerFragment : Fragment() {
         }
         postListAdapter.submitList(DataSet.shortListForPlayerPage)
 
-        // Observe the player visibility state in the ViewModel
-        viewModel.playerVisibility.observe(viewLifecycleOwner) { isPlayerVisible ->
-            updatePlayerVisibility(isPlayerVisible)
-        }
-
-        binding.playerOverlay onClick {
-            // Trigger the ViewModel to toggle the visibility
-            viewModel.togglePlayerVisibility()
-        }
-
-        binding.imgSettings onClick {
-            val dialogView = layoutInflater.inflate(R.layout.resolution_bottom_sheet, null)
-            val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
-            dialog.setContentView(dialogView)
-            val myButton = dialogView.findViewById<TextView>(R.id.txtResolution)
-            myButton.setOnClickListener {
-                viewModel.trackSelection(requireActivity())
-                dialog.dismiss()
-            }
-            viewModel.selectedFormat.observe(viewLifecycleOwner) { format ->
-                val quality = dialogView.findViewById<TextView>(R.id.txtQuality)
-                quality.text = format
-            }
-            dialog.show()
-        }
-
-        binding.imgFullScreen onClick {
-            viewModel.toggleFullScreen(requireActivity())
-        }
-
         // Observe the player state in the ViewModel
         viewModel.playerState.observe(viewLifecycleOwner) { state ->
             handlePlayerState(state)
         }
-
         viewModel.currentPosition.observe(viewLifecycleOwner) { currentPosition ->
-            // Update your UI with the current watch time
-            binding.txtCurrentTime.text = currentPosition.formatTime()
-            // Update your TextView or other UI elements
+            val txtCurrentTime = binding.videoPlayer.findViewById<TextView>(R.id.txtCurrentTime)
+            txtCurrentTime.text = currentPosition.formatTime()
         }
     }
 
@@ -136,14 +103,15 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n")
+    @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n", "InflateParams")
     private fun preparePlayer() {
         binding.progressbar.visibility = View.VISIBLE
         viewModel.setMediaItem(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"))
         binding.videoPlayer.player = viewModel.player
-        binding.videoPlayer.useController = false
-        binding.txtDuration.text = " / ${viewModel.videoDuration.formatTime()}"
-        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.videoPlayer.useController = true
+
+        val seekBar: SeekBar = binding.videoPlayer.findViewById(R.id.seekBar)
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     val duration = viewModel.player.duration
@@ -152,14 +120,59 @@ class PlayerFragment : Fragment() {
                     updateSeekBar()
                 }
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                updateSeekBar()
+                TODO("Not yet implemented")
             }
+
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // Handle seek bar touch stop
+                TODO("Not yet implemented")
             }
         })
-        binding.seekBar.max = 100
+
+        val playButton = binding.videoPlayer.findViewById<ImageView>(R.id.img_play)
+        val rewindButton = binding.videoPlayer.findViewById<ImageView>(R.id.img_rewind)
+        val forwardButton = binding.videoPlayer.findViewById<ImageView>(R.id.img_forward)
+        val settingsButton = binding.videoPlayer.findViewById<ImageView>(R.id.imgSettings)
+        val fullScreenButton = binding.videoPlayer.findViewById<ImageView>(R.id.imgFullScreen)
+        val txtDuration = binding.videoPlayer.findViewById<TextView>(R.id.txtDuration)
+        txtDuration.text = " / ${viewModel.videoDuration.formatTime()}"
+
+        playButton onClick {
+            if (viewModel.player.isPlaying) {
+                viewModel.player.pause()
+                playButton.setImageResource(android.R.drawable.ic_media_play)
+            } else {
+                viewModel.player.play()
+                playButton.setImageResource(android.R.drawable.ic_media_pause)
+            }
+        }
+        rewindButton onClick {
+            viewModel.player.seekTo(viewModel.player.currentPosition - 10000)
+        }
+        forwardButton onClick {
+            viewModel.player.seekTo(viewModel.player.currentPosition + 10000)
+        }
+        settingsButton onClick {
+            val dialogView = layoutInflater.inflate(R.layout.resolution_bottom_sheet, null)
+            val dialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
+            dialog.setContentView(dialogView)
+            val myButton = dialogView.findViewById<TextView>(R.id.txtResolution)
+            myButton.setOnClickListener {
+                viewModel.trackSelection(requireActivity())
+                dialog.dismiss()
+            }
+            viewModel.selectedFormat.observe(viewLifecycleOwner) { format ->
+                val quality = dialogView.findViewById<TextView>(R.id.txtQuality)
+                quality.text = format
+            }
+            dialog.show()
+        }
+        fullScreenButton onClick {
+            viewModel.toggleFullScreen(requireActivity())
+        }
+
+        seekBar.max = 100
 
         coroutineScope.launch {
             while (isActive) {
@@ -168,20 +181,6 @@ class PlayerFragment : Fragment() {
             }
         }
 
-        binding.imgPlay onClick {
-            viewModel.playPause()
-            if (viewModel.player.isPlaying) {
-                binding.imgPlay.setImageResource(android.R.drawable.ic_media_pause)
-            } else {
-                binding.imgPlay.setImageResource(android.R.drawable.ic_media_play)
-            }
-        }
-        binding.imgForward onClick {
-            viewModel.forward(10000)
-        }
-        binding.imgRewind onClick {
-            viewModel.rewind(10000)
-        }
         val mainActivity = requireActivity() as MainActivity
         // Observe the full-screen state
         viewModel.isFullScreen.observe(viewLifecycleOwner) { isFullScreen ->
@@ -195,12 +194,13 @@ class PlayerFragment : Fragment() {
     }
 
     fun updateSeekBar() {
+        val seekBar: SeekBar = binding.videoPlayer.findViewById(R.id.seekBar)
         coroutineScope.launch {
             while (isActive) {
                 val duration = viewModel.player.duration
                 val currentPosition = viewModel.player.currentPosition
                 val progress = if (duration > 0) (currentPosition * 100 / duration).toInt() else 0
-                binding.seekBar.progress = progress
+                seekBar.progress = progress
                 delay(1000) // Update every second
             }
         }
@@ -222,25 +222,6 @@ class PlayerFragment : Fragment() {
                 binding.progressbar.visibility = View.GONE
             }
         }
-    }
-
-    @SuppressLint("ResourceAsColor")
-    private fun updatePlayerVisibility(isPlayerVisible: Boolean) {
-        val visibility = if (isPlayerVisible) View.VISIBLE else View.GONE
-
-        binding.playerOverlay.setBackgroundColor(
-            if (isPlayerVisible) R.color.black
-            else Color.TRANSPARENT
-        )
-
-        binding.imgPlay.visibility = visibility
-        binding.imgRewind.visibility = visibility
-        binding.imgForward.visibility = visibility
-        binding.imgSettings.visibility = visibility
-        binding.imgFullScreen.visibility = visibility
-        binding.txtCurrentTime.visibility = visibility
-        binding.txtDuration.visibility = visibility
-        binding.seekBar.visibility = visibility
     }
 
     @OptIn(UnstableApi::class) override fun onStop() {

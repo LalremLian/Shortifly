@@ -25,7 +25,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,10 +36,6 @@ class PlayerViewModel @Inject constructor(
     private val trackSelector: DefaultTrackSelector
 ) : ViewModel(), PlayerControls {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-    //For the visibility of the player
-    private val _playerVisibility = MutableLiveData<Boolean>()
-    val playerVisibility: LiveData<Boolean> get() = _playerVisibility
 
     private val _playerState = MutableLiveData<Int>()
     val playerState: LiveData<Int> get() = _playerState
@@ -62,7 +57,6 @@ class PlayerViewModel @Inject constructor(
 
     init {
         _isFullScreen.value = false
-        _playerVisibility.value = true
     }
 
     fun toggleFullScreen(activity: FragmentActivity) {
@@ -83,20 +77,6 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    suspend fun setPlayerVisibility() {
-        delay(2500).apply {
-            _playerVisibility.value = false
-        }
-    }
-
-    fun togglePlayerVisibility() {
-        _playerVisibility.value = !_playerVisibility.value!!
-    }
-
-    private val isPlayingStateFlow = MutableStateFlow(true)
-//    val isPlayingStateFlow = _isPlayingStateFlow.asStateFlow()
-
-
     override fun onCleared() {
         super.onCleared()
         player.release()
@@ -116,9 +96,6 @@ class PlayerViewModel @Inject constructor(
         player.apply {
             addMediaItem(mediaItem)
             playWhenReady = true
-            if (isPlaying) {
-                isPlayingStateFlow.value = true
-            }
         }
         player.apply { prepare() }
         videoDuration = player.duration
@@ -236,13 +213,9 @@ class PlayerViewModel @Inject constructor(
 
     override fun playPause() {
         if (player.isPlaying) {
-            player.pause().also {
-                isPlayingStateFlow.value = false
-            }
+            player.pause()
         } else {
-            player.play().also {
-                isPlayingStateFlow.value = true
-            }
+            player.play()
         }
     }
 
@@ -260,13 +233,9 @@ class PlayerViewModel @Inject constructor(
 
     override fun handlePlaybackOnLifecycle(value: Boolean) {
         if (player.isPlaying && value) {
-            player.pause().also {
-                isPlayingStateFlow.value = false
-            }
+            player.pause()
         } else if (!player.isPlaying && !value) {
-            player.play().also {
-                isPlayingStateFlow.value = true
-            }
+            player.play()
         }
     }
 

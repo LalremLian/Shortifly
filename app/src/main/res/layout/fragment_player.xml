@@ -9,123 +9,21 @@
         android:id="@+id/videoPlayer"
         android:layout_width="match_parent"
         android:layout_height="250dp"
+        app:controller_layout_id="@layout/player_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
     </androidx.media3.ui.PlayerView>
-
-    <View
-        android:id="@+id/playerOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
-        app:layout_constraintStart_toStartOf="@+id/videoPlayer"
-        app:layout_constraintRight_toRightOf="@+id/videoPlayer"
-        app:layout_constraintTop_toTopOf="@+id/videoPlayer" />
 
     <ProgressBar
         android:id="@+id/progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="#5C5C5C"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
         app:layout_constraintEnd_toEndOf="@+id/videoPlayer"
         app:layout_constraintStart_toStartOf="@+id/videoPlayer"
         app:layout_constraintTop_toTopOf="@+id/videoPlayer" />
-
-    <ImageView
-        android:id="@+id/img_play"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:visibility="gone"
-        android:src="@android:drawable/ic_media_pause"
-        app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
-        app:layout_constraintEnd_toEndOf="@+id/playerOverlay"
-        app:layout_constraintStart_toStartOf="@+id/videoPlayer"
-        app:layout_constraintTop_toTopOf="@+id/playerOverlay" />
-
-    <ImageView
-        android:id="@+id/img_forward"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="35dp"
-        android:visibility="gone"
-        android:src="@android:drawable/ic_media_ff"
-        app:layout_constraintBottom_toBottomOf="@+id/img_play"
-        app:layout_constraintStart_toEndOf="@+id/img_play"
-        app:layout_constraintTop_toTopOf="@+id/img_play" />
-
-    <ImageView
-        android:id="@+id/img_rewind"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="35dp"
-        android:visibility="gone"
-        android:src="@android:drawable/ic_media_rew"
-        app:layout_constraintBottom_toBottomOf="@+id/img_play"
-        app:layout_constraintEnd_toStartOf="@+id/img_play"
-        app:layout_constraintTop_toTopOf="@+id/img_play" />
-
-    <TextView
-        android:id="@+id/txtCurrentTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00:00"
-        android:layout_marginBottom="15dp"
-        android:layout_marginStart="10dp"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar"/>
-
-    <TextView
-        android:id="@+id/txtDuration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="/ 1:25"
-        android:visibility="gone"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtCurrentTime"
-        app:layout_constraintStart_toEndOf="@+id/txtCurrentTime"
-        app:layout_constraintTop_toTopOf="@+id/txtCurrentTime" />
-
-    <ImageView
-        android:id="@+id/imgFullScreen"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_margin="15dp"
-        android:visibility="gone"
-        android:src="@drawable/ic_fullscreen"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar"
-        app:layout_constraintEnd_toEndOf="@+id/videoPlayer" />
-
-    <ImageView
-        android:id="@+id/imgSettings"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
-        android:src="@drawable/ic_settings"
-        app:layout_constraintEnd_toEndOf="@+id/videoPlayer"
-        app:layout_constraintTop_toTopOf="@+id/videoPlayer" />
-
-    <androidx.appcompat.widget.AppCompatSeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:progressBackgroundTint="@color/white"
-        android:progressTint="#BA0303"
-        android:thumbTint="#6C6C6C"
-        android:visibility="gone"
-        style="@style/CustomSeekBar"
-        android:layout_marginBottom="-6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
