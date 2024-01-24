@@ -11,7 +11,6 @@ import com.lazydeveloper.shortifly.data.models.VideoResult
 import com.lazydeveloper.shortifly.databinding.SingleSearchItemBinding
 import com.lazydeveloper.shortifly.ui.fragments.PlayerFragment
 import com.lazydeveloper.shortifly.utils.extensions.diffCallback
-import com.lazydeveloper.shortifly.utils.extensions.onClick
 
 class PlayerItemListAdapter :
     ListAdapter<VideoResult, PlayerItemListAdapter.PostViewHolder>(
@@ -40,10 +39,6 @@ class PlayerItemListAdapter :
                 .load(item.thumbnail)
                 .placeholder(R.drawable.loading)
                 .into(binding.imgThumbnail)
-
-            binding.root onClick {
-                itemClickListener.onItemClickListener(item)
-            }
         }
 
         companion object {
@@ -64,9 +59,5 @@ class PlayerItemListAdapter :
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
-    }
-
-    interface ItemClickListener {
-        fun onItemClickListener(item: VideoResult)
     }
 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,11 @@ import com.lazydeveloper.shortifly.utils.DataSet
 import com.lazydeveloper.shortifly.utils.extensions.formatTime
 import com.lazydeveloper.shortifly.utils.extensions.onClick
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -36,10 +40,9 @@ class PlayerFragment : Fragment() {
     private val postListAdapter: PlayerItemListAdapter by lazy { PlayerItemListAdapter() }
 
     private val viewModel: PlayerViewModel by viewModels()
-
-    private lateinit var seekBarHandler: Handler
-    private lateinit var seekBarRunnable: Runnable
     private lateinit var binding: FragmentPlayerBinding
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,6 +99,10 @@ class PlayerFragment : Fragment() {
                 viewModel.trackSelection(requireActivity())
                 dialog.dismiss()
             }
+            viewModel.selectedFormat.observe(viewLifecycleOwner) { format ->
+                val quality = dialogView.findViewById<TextView>(R.id.txtQuality)
+                quality.text = format
+            }
             dialog.show()
         }
 
@@ -108,7 +115,7 @@ class PlayerFragment : Fragment() {
             handlePlayerState(state)
         }
 
-        viewModel.currentPosition2.observe(viewLifecycleOwner) { currentPosition ->
+        viewModel.currentPosition.observe(viewLifecycleOwner) { currentPosition ->
             // Update your UI with the current watch time
             binding.txtCurrentTime.text = currentPosition.formatTime()
             // Update your TextView or other UI elements
@@ -129,10 +136,9 @@ class PlayerFragment : Fragment() {
         }
     }
 
-    fun onItemClickListener(item: VideoResult) {}
-
     @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n")
     private fun preparePlayer() {
+        binding.progressbar.visibility = View.VISIBLE
         viewModel.setMediaItem(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"))
         binding.videoPlayer.player = viewModel.player
         binding.videoPlayer.useController = false
@@ -154,8 +160,13 @@ class PlayerFragment : Fragment() {
             }
         })
         binding.seekBar.max = 100
-        seekBarHandler = Handler()
-        seekBarRunnable = Runnable { updateSeekBar() }
+
+        coroutineScope.launch {
+            while (isActive) {
+                updateSeekBar()
+                delay(1000)
+            }
+        }
 
         binding.imgPlay onClick {
             viewModel.playPause()
@@ -181,32 +192,35 @@ class PlayerFragment : Fragment() {
                 mainActivity.setCustomHeaderVisibility(true)
             }
         }
-        viewModel.isFullScreen.observe(viewLifecycleOwner) { isFullScreen ->
-            isFullScreen?.let { handleFullScreen(it) }
-        }
     }
 
     fun updateSeekBar() {
-        val duration = viewModel.player.duration
-        val currentPosition = viewModel.player.currentPosition
-        val progress = if (duration > 0) (currentPosition * 100 / duration).toInt() else 0
-        binding.seekBar.progress = progress
-        // Schedule the next update
-        seekBarHandler.postDelayed(seekBarRunnable, 1000) // Update every second
+        coroutineScope.launch {
+            while (isActive) {
+                val duration = viewModel.player.duration
+                val currentPosition = viewModel.player.currentPosition
+                val progress = if (duration > 0) (currentPosition * 100 / duration).toInt() else 0
+                binding.seekBar.progress = progress
+                delay(1000) // Update every second
+            }
+        }
     }
 
     private fun handlePlayerState(state: Int) {
         when (state) {
             Player.STATE_IDLE -> {
-                // Handle idle state
+                binding.progressbar.visibility = View.VISIBLE
             }
             Player.STATE_READY -> {
                 updateSeekBar()
+                binding.progressbar.visibility = View.GONE
             }
             Player.STATE_BUFFERING -> {
-                // Handle buffering state
+                binding.progressbar.visibility = View.VISIBLE
             }
-            // Add other states as needed
+            Player.STATE_ENDED -> {
+                binding.progressbar.visibility = View.GONE
+            }
         }
     }
 
@@ -247,5 +261,6 @@ class PlayerFragment : Fragment() {
     @OptIn(UnstableApi::class) override fun onDestroyView() {
         super.onDestroyView()
         viewModel.releasePlayer()
+        coroutineScope.cancel()
     }
 }

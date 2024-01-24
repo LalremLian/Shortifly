@@ -7,17 +7,26 @@
 
     <style name="Theme.Shortifly" parent="Base.Theme.Shortifly" />
 
+    <!-- CustomSeekbar -->
     <style name="CustomSeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:paddingStart">2dp</item>
         <item name="android:paddingEnd">2dp</item>
     </style>
-    
+
+    <!-- BottomSheet -->
     <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_marginHorizontal">10dp</item>
     </style>
     <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <!-- CustomDialog -->
+    <style name="ResolutionDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">#F1F1F1</item>
+        <item name="android:textColorPrimary">#F1F1F1</item>
+        <item name="android:background">#171717</item>
     </style>
 
 </resources>

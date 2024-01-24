@@ -5,17 +5,6 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminateTint="#5C5C5C"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
-        app:layout_constraintEnd_toEndOf="@+id/videoPlayer"
-        app:layout_constraintStart_toStartOf="@+id/videoPlayer"
-        app:layout_constraintTop_toTopOf="@+id/videoPlayer" />
-
     <androidx.media3.ui.PlayerView
         android:id="@+id/videoPlayer"
         android:layout_width="match_parent"
@@ -32,6 +21,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
         app:layout_constraintStart_toStartOf="@+id/videoPlayer"
         app:layout_constraintRight_toRightOf="@+id/videoPlayer"
+        app:layout_constraintTop_toTopOf="@+id/videoPlayer" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="#5C5C5C"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/videoPlayer"
+        app:layout_constraintEnd_toEndOf="@+id/videoPlayer"
+        app:layout_constraintStart_toStartOf="@+id/videoPlayer"
         app:layout_constraintTop_toTopOf="@+id/videoPlayer" />
 
     <ImageView
@@ -71,7 +71,7 @@
         android:id="@+id/txtCurrentTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00"
+        android:text="00:00"
         android:layout_marginBottom="15dp"
         android:layout_marginStart="10dp"
         android:textColor="@color/white"
