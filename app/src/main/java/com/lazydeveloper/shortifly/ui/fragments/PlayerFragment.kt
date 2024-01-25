@@ -38,12 +38,9 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class PlayerFragment : Fragment() {
     private val postListAdapter: PlayerItemListAdapter by lazy { PlayerItemListAdapter() }
-
     private val viewModel: PlayerViewModel by viewModels()
     private lateinit var binding: FragmentPlayerBinding
-
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -101,12 +98,13 @@ class PlayerFragment : Fragment() {
             width = layoutParams.first
             height = layoutParams.second
         }
+
     }
 
     @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n", "InflateParams")
     private fun preparePlayer() {
         binding.progressbar.visibility = View.VISIBLE
-        viewModel.setMediaItem(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"))
+        viewModel.setMediaItem(Uri.parse("https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"))
         binding.videoPlayer.player = viewModel.player
         binding.videoPlayer.useController = true
 
@@ -122,11 +120,9 @@ class PlayerFragment : Fragment() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                TODO("Not yet implemented")
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                TODO("Not yet implemented")
             }
         })
 

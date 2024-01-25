@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initial()
+            initial()
     }
 
     private fun initial() {
@@ -37,9 +37,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Search", Toast.LENGTH_SHORT).show()
         }
 
-        val bottomNavigationView = binding.bottomNavigationView
         val navController = findNavController(R.id.nav_host_fragment)
-        bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.shortsFragment2) {
@@ -61,15 +60,9 @@ class MainActivity : AppCompatActivity() {
     fun setCustomHeaderVisibility(isVisible: Boolean) {
         binding.customHeader.toolbarLayout.visibility = if (isVisible) View.VISIBLE else View.GONE
         if (isVisible) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         } else {
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
         binding.floatingButton.visibility = if (isVisible) View.VISIBLE else View.GONE
         binding.bottomNavigationView.visibility = if (isVisible) View.VISIBLE else View.GONE
