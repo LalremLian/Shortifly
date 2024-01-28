@@ -26,7 +26,9 @@ import com.lazydeveloper.shortifly.ui.adapters.PlayerItemListAdapter
 import com.lazydeveloper.shortifly.ui.home.MainActivity
 import com.lazydeveloper.shortifly.utils.DataSet
 import com.lazydeveloper.shortifly.utils.extensions.formatTime
+import com.lazydeveloper.shortifly.utils.extensions.gone
 import com.lazydeveloper.shortifly.utils.extensions.onClick
+import com.lazydeveloper.shortifly.utils.extensions.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -103,7 +105,7 @@ class PlayerFragment : Fragment() {
 
     @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n", "InflateParams")
     private fun preparePlayer() {
-        binding.progressbar.visibility = View.VISIBLE
+        binding.progressbar.visible()
         viewModel.setMediaItem(Uri.parse("https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"))
         binding.videoPlayer.player = viewModel.player
         binding.videoPlayer.useController = true
@@ -205,17 +207,17 @@ class PlayerFragment : Fragment() {
     private fun handlePlayerState(state: Int) {
         when (state) {
             Player.STATE_IDLE -> {
-                binding.progressbar.visibility = View.VISIBLE
+                binding.progressbar.visible()
             }
             Player.STATE_READY -> {
                 updateSeekBar()
-                binding.progressbar.visibility = View.GONE
+                binding.progressbar.gone()
             }
             Player.STATE_BUFFERING -> {
-                binding.progressbar.visibility = View.VISIBLE
+                binding.progressbar.visible()
             }
             Player.STATE_ENDED -> {
-                binding.progressbar.visibility = View.GONE
+                binding.progressbar.gone()
             }
         }
     }
