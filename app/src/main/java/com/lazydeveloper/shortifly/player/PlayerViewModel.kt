@@ -102,9 +102,6 @@ class PlayerViewModel @Inject constructor(
         initializePlayer()
     }
 
-    private val _currentPosition = MutableLiveData<Long>()
-    val currentPosition: LiveData<Long> get() = _currentPosition
-
     @OptIn(UnstableApi::class)
     private fun initializePlayer() {
         // Initialize your player here
@@ -132,7 +129,6 @@ class PlayerViewModel @Inject constructor(
                 if (isPlaying) {
                     coroutineScope.launch {
                         while (isActive) {
-                            updateWatchTime()
                             delay(1000) // Update every second
                         }
                     }
@@ -145,22 +141,19 @@ class PlayerViewModel @Inject constructor(
                 _playerState.postValue(state)
                 when (state) {
                     Player.STATE_IDLE -> {
-                        updateWatchTime()
+                        isPlaying = false
                     }
 
                     Player.STATE_BUFFERING -> {
                         isPlaying = false
-                        updateWatchTime()
                     }
 
                     Player.STATE_READY -> {
                         isPlaying = true
-                        updateWatchTime()
                     }
 
                     Player.STATE_ENDED -> {
                         isPlaying = false
-                        updateWatchTime()
                     }
                 }
             }
@@ -197,10 +190,6 @@ class PlayerViewModel @Inject constructor(
             builder.build().show()
         }
         player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-    }
-
-    private fun updateWatchTime() {
-        _currentPosition.postValue(player.currentPosition)
     }
 
     fun releasePlayer() {

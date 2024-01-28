@@ -82,10 +82,6 @@ class PlayerFragment : Fragment() {
         viewModel.playerState.observe(viewLifecycleOwner) { state ->
             handlePlayerState(state)
         }
-        viewModel.currentPosition.observe(viewLifecycleOwner) { currentPosition ->
-            val txtCurrentTime = binding.videoPlayer.findViewById<TextView>(R.id.txtCurrentTime)
-            txtCurrentTime.text = currentPosition.formatTime()
-        }
     }
 
     private fun handleFullScreen(isFullScreen: Boolean) {
@@ -100,7 +96,6 @@ class PlayerFragment : Fragment() {
             width = layoutParams.first
             height = layoutParams.second
         }
-
     }
 
     @OptIn(UnstableApi::class) @SuppressLint("ResourceAsColor", "SetTextI18n", "InflateParams")
@@ -171,7 +166,6 @@ class PlayerFragment : Fragment() {
         }
 
         seekBar.max = 100
-
         coroutineScope.launch {
             while (isActive) {
                 updateSeekBar()
@@ -198,6 +192,8 @@ class PlayerFragment : Fragment() {
                 val duration = viewModel.player.duration
                 val currentPosition = viewModel.player.currentPosition
                 val progress = if (duration > 0) (currentPosition * 100 / duration).toInt() else 0
+                val txtCurrentTime = binding.videoPlayer.findViewById<TextView>(R.id.txtCurrentTime)
+                txtCurrentTime.text = currentPosition.formatTime()
                 seekBar.progress = progress
                 delay(1000) // Update every second
             }
@@ -224,12 +220,17 @@ class PlayerFragment : Fragment() {
 
     @OptIn(UnstableApi::class) override fun onStop() {
         super.onStop()
-        viewModel.releasePlayer()
+        viewModel.playPause()
     }
 
     @OptIn(UnstableApi::class) override fun onPause() {
         super.onPause()
-        viewModel.releasePlayer()
+        viewModel.playPause()
+    }
+
+    @OptIn(UnstableApi::class) override fun onResume() {
+        super.onResume()
+        viewModel.playPause()
     }
 
     @OptIn(UnstableApi::class) override fun onDestroy() {
